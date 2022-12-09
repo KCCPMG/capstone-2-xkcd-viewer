@@ -31,3 +31,25 @@ The only outlier is that there are twenty comics which have an "extra_parts" key
 These seem to be basic scripts that I can simply drop in when showing the images myself, but I won't cross that bridge for a while. In the meantime, there are so few of these (and in something of a messy pattern) that I will not include them as part of my main comics table. They may go into another SQL table, or I may store them somewhere else, or I may avoid them altogether if it proves that it is too complicated to represent these when there are other things that need to be done. These special cases are only 20 out of over 2,700 comics.
 
 Meanwhile, it seems like I can begin putting together my comics table clearly from the JSON that I'm getting back.
+
+
+## December 9, 1:40 PM
+
+My visualized database should look like this:
+
+![Database Diagram](./seed/database_diagram.jpg)
+
+I now need to review express-jobly and perhaps other projects to see how to corretly model and seed this with pg and sql.
+
+
+
+
+
+
+
+
+
+
+
+
+
