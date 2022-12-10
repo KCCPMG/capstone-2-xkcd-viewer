@@ -42,6 +42,26 @@ My visualized database should look like this:
 I now need to review express-jobly and perhaps other projects to see how to corretly model and seed this with pg and sql.
 
 
+## December 10, 12:55 PM
+
+Though I have some cleanup to do, I have set up my config.js file, my db.js file, and my seed.js file to seed my test database. My next step will be to set up my models with the following methods
+
+Comic
+-getComic
+-addComic
+
+User
+-signup
+-authenticate
+-editUser
+
+Upvote
+-addUpvote
+-removeUpvote
+
+Favorite
+-addFavorite
+-removeFavorite
 
 
 
