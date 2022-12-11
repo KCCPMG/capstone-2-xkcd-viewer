@@ -10,7 +10,7 @@ const seedTestDB = async () => {
   const db = require('../db');
   db.on('connect', async () => {
     console.log(`From seed.js on connect: ${db.database}`);
-    await db.query('DROP TABLE IF EXISTS comics;');
+    await db.query('DROP TABLE IF EXISTS comics CASCADE;');
   
     await db.query(`CREATE TABLE comics(
       num INTEGER PRIMARY KEY,
@@ -45,9 +45,9 @@ const seedTestDB = async () => {
 
     await db.query(`CREATE TABLE users (
       id TEXT UNIQUE PRIMARY KEY, 
-      email TEXT
+      email TEXT UNIQUE
         CHECK (position('@' IN email) > 1), 
-      username TEXT, 
+      username TEXT UNIQUE, 
       hashed_password TEXT, 
       created_at DATE);`);
 
