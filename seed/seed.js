@@ -44,7 +44,7 @@ const seedTestDB = async () => {
     ])
 
     await db.query(`CREATE TABLE users (
-      id INTEGER PRIMARY KEY, 
+      id TEXT UNIQUE PRIMARY KEY, 
       email TEXT
         CHECK (position('@' IN email) > 1), 
       username TEXT, 
@@ -53,11 +53,11 @@ const seedTestDB = async () => {
 
     await Promise.all([
       db.query(`CREATE TABLE upvotes (
-        user_id INTEGER REFERENCES users (id),
-        comic_num INTEGER);`),
+        user_id TEXT REFERENCES users (id),
+        comic_num INTEGER REFERENCES comics (num));`),
       db.query(`CREATE TABLE favorites (
-        user_id INTEGER REFERENCES users (id),
-        comic_num INTEGER);`)
+        user_id TEXT REFERENCES users (id),
+        comic_num INTEGER REFERENCES comics (num));`)
     ])
 
     console.log("done");
