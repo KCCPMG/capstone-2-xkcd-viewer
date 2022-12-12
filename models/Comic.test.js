@@ -11,20 +11,20 @@ describe("Testing Comic.js", function() {
     expect(2).toBe(2);
   })
 
-  test("Should return a valid comic when there isn't one", async function(){
+  test("Should return a valid comic when there is one", async function(){
     const comic = await getComic(1);
     expect(comic.num).toBe(1);
     expect(comic.year).toBe("2006");
     expect(comic.transcript).toContain(`[[The barrel drifts into the distance. Nothing else can be seen.]]`);
   })
 
-  test("Should return null when a valid comic cannot be found", async function(){
-    const comic = await getComic(0);
-    expect(comic).toBe(null);
+
+  test("Should throw a BadRequestError when a valid comic cannot be found", async function(){
+    await expect(getComic(0)).rejects.toThrow("Could not find this comic, please check your input")
   })
 
   test("Should successfully add a comic", async function(){
-    // this comic is outside of the range of what is initially brought into 
+    // this comic is outside of the range of what is initially brought into comics.json and the seeded testdb
     const newComic = {
       month: "12", 
       num: 2709, 
@@ -46,8 +46,7 @@ describe("Testing Comic.js", function() {
     expect(comic).toStrictEqual(newComic);
 
     await db.query(`DELETE FROM comics WHERE num=2709;`)
-    const deletedComic = await getComic(2709);
-    expect(deletedComic).toBe(null);
+    await expect(getComic(2709)).rejects.toThrow("Could not find this comic, please check your input")
     
   })
 
@@ -66,12 +65,13 @@ describe("Testing Comic.js", function() {
       day: "9"
     }
 
-    try {
-      const addResults = await addComic(newComic);
-      expect(addResults).toBe("Something went wrong. Please check your input.")
-    } catch(e) {
-      console.log(e);
-    }
+    await expect(addComic(newComic)).rejects.toThrow("Bad Request: Could not create comic, please check your input")
+
+    // try {
+    //   const addResults = await addComic(newComic);
+    // } catch(e) {
+    //   expect(e.status).toBe(4000);
+    // }
   })
 
 })

@@ -51,6 +51,7 @@ Comic
 -addComic
 
 User
+-getUser
 -signup
 -authenticate
 -editUser
@@ -62,6 +63,32 @@ Upvote
 Favorite
 -addFavorite
 -removeFavorite
+
+
+## December 10, 3:00 PM
+
+I've completed Comic.js for now, as well as Comic.test.js with all tests passing. There may be more changes I make to these later, but otherwise I will go ahead with the remaining models, writing tests as I go.
+
+
+## December 10, 4:00 PM
+
+I've added some errors while working on User, and I will also need to use those errors for some cases in Comic.js and Comic.test.js that are currently only returning strings for not being found. This will give me a more straightforward way of handling errors when it comes time to handle the actual routing. Additionally, I am using uuid to generate user ids, which means I need to change my User schema so that ids are held as text instead of as integers. This means I will also need to correct my upvotes and favorites tables to reflect that the foreign key in users is text and not an integer.
+
+
+## December 11, 10:15 AM
+
+I realized that I needed to make another correction to my database setup, which is to make 'username' UNIQUE on the users table. This means that a user will now have three unique identifiers, although username and email may be subject to change.
+
+
+## December 11, 1:05 PM
+
+Made additional changes to Comic.js and Comic.test.js to better handle errors and to catch them in the test where I was not accurately doing so before.
+
+
+## December 11, 5:15 PM
+
+I had a great deal of difficulty getting User.signup working, but it appears to finally be working correctly. I need to be more careful with my db queries, because bad arguments throw errors that don't provide a tremendous amount of detail. I also learned that I should change my created_at in users from a DATE to a TIMESTAMPTZ, which I can populate by using NOW() in the db query string (not the array).
+
 
 
 
