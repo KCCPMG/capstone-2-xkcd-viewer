@@ -49,7 +49,7 @@ const seedTestDB = async () => {
         CHECK (position('@' IN email) > 1), 
       username TEXT UNIQUE, 
       hashed_password TEXT, 
-      created_at DATE);`);
+      created_at TIMESTAMPTZ);`);
 
     await Promise.all([
       db.query(`CREATE TABLE upvotes (
