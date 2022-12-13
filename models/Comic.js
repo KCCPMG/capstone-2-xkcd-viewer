@@ -16,7 +16,8 @@ const getComic = async (num) => {
     else throw new NotFoundError("Could not find this comic, please check your input");
 
   } catch(e) {
-    throw new BadRequestError(`Bad Request Error: ${e.message}`)
+    if (e instanceof NotFoundError) throw e;
+    else throw new BadRequestError(`Bad Request Error: ${e.message}`)
   }
 
 }

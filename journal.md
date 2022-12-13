@@ -94,9 +94,15 @@ I had a great deal of difficulty getting User.signup working, but it appears to 
 
 I still have the favorites and upvotes models to do, but I want to move ahead slightly and take care of the basic scaffolding for the backend so that I can start serving some of the comics. I may also need to add a more detailed version of getComic to Comic.js which will return upvotes and favorites along with the data from the comics table.
 
+
 ## December 11, 8:30 PM
 
-In order to fill in some of the scaffolding, I need to write my middleware auth token. I am expecting the auth token to simply be in req.header.token, and I will not require it to be preceded by "Bearer" or any other decorator. If jwt successfully verifies a token, the user id will go to req.user_id. req.user_id will be set to null before making this check, so as to prevent a request from being manipulated to give it a user_id separately from the jwt verification process.
+In order to fill in some of the scaffolding, I need to write my middleware auth token. I am expecting the auth token to simply be in req.headers.token, and I will not require it to be preceded by "Bearer" or any other decorator. If jwt successfully verifies a token, the user id will go to req.user_id. req.user_id will be set to null before making this check, so as to prevent a request from being manipulated to give it a user_id separately from the jwt verification process.
+
+
+## December 12, 7:20 PM
+
+I've added a very basic express router for "/comics" which has a "/:num" route which is now serving from my (test) database. It successfully passes a Not Found error message if the parameter is invalid and successfully passes the correct json with a valid comic number. In one small degree, I have what looks like full end-to-end capability (not tested yet) on one point. I don't have time to do much more this evening, but I expect that my next step will be to return to my database models to get them fully operational before continuing on with routing, authorization, tokens, etc.
 
 
 

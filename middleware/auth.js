@@ -8,8 +8,10 @@ const SECRET_KEY = process.env.SECRET_KEY;
 function authenticateJWT(req, res, next) {
   try {
     req.user_id = null;
-    if (req.header.token) {
-      req.user_id = jwt.verify(req.header.token, SECRET_KEY);
+    console.log(req.user_id);
+    console.log(req.headers);
+    if (req.headers.token) {
+      req.user_id = jwt.verify(req.headers.token, SECRET_KEY);
     }
     return next();
   } catch(e) {
