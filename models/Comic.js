@@ -23,8 +23,8 @@ const getComic = async (num) => {
 }
 
 
-/**
- * takes a comic object and inserts it into comics table 
+/** Takes a comic object and inserts it into comics table 
+ * 
  */
 const addComic = async (comic) => {
   try {

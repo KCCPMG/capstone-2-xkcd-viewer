@@ -105,6 +105,9 @@ In order to fill in some of the scaffolding, I need to write my middleware auth 
 I've added a very basic express router for "/comics" which has a "/:num" route which is now serving from my (test) database. It successfully passes a Not Found error message if the parameter is invalid and successfully passes the correct json with a valid comic number. In one small degree, I have what looks like full end-to-end capability (not tested yet) on one point. I don't have time to do much more this evening, but I expect that my next step will be to return to my database models to get them fully operational before continuing on with routing, authorization, tokens, etc.
 
 
+## December 16, 4:00 PM
+
+I am returning to this after several days away to work on behavioral interview prep. I need to build my Upvote.js and Favorite.js files, which I expect will be virtually identical to one another since they are essentially just two different tables to show the same feature (the difference will be meaningful on the front-end). As of now, I don't know if I'll put get methods on upvotes/favorites or put those methods on the Comic and User models.
 
 
 
