@@ -1,7 +1,7 @@
 const db = require("../db.js");
 const { BadRequestError } = require("../expressError.js");
 const { signup, getUser} = require("./User.js");
-const { addUpvote } = require("./Upvote.js");
+const { addUpvote, removeUpvote } = require("./Upvote.js");
 process.env.NODE_ENV = "test";
 
 
@@ -27,7 +27,7 @@ afterAll(async() => {
 
 describe("Successfully adds an upvote", function(){
 
-  test("it successfully adds and returns an upvote", async () => {
+  test("successfully adds and returns an upvote", async () => {
     const upvote = await addUpvote(testUser.id, 2000);
     expect(upvote.user_id).toBe(testUser.id);
     expect(upvote.comic_num).toBe(2000);
@@ -54,4 +54,36 @@ describe("Successfully adds an upvote", function(){
     await expect(addUpvote(testUser.id, 2000)).rejects.toThrow("Cannot add upvote as requested, upvote already exists");
   })
 
+})
+
+
+describe("Successfully deletes an upvote", function() {
+
+  beforeEach(async() => { 
+    await Promise.all([
+      db.query(`DELETE FROM upvotes`),
+      addUpvote(testUser.id, 2000)
+    ]);
+   })
+
+  test("successfully deletes an upvote", async() => {
+    const removeQuery = await removeUpvote(testUser.id, 2000);
+    expect(removeQuery.user_id).toBe(testUser.id);
+    expect(removeQuery.comic_num).toBe(2000);
+  })
+
+
+  test("rejects with NotFound with bad user", async() => {
+    await expect(removeUpvote(1000, 2000)).rejects.toThrow("No rows deleted")
+  })
+
+
+  test("rejects with NotFound with bad comic", async() => {
+    await expect(removeUpvote(testUser.id, 10000000)).rejects.toThrow("No rows deleted")
+  })
+
+
+  test("rejects with NotFound with wrong comic", async() => {
+    await expect(removeUpvote(testUser.id, 1)).rejects.toThrow("No rows deleted")
+  })
 })

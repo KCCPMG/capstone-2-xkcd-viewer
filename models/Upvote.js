@@ -26,7 +26,7 @@ const addUpvote = async (userId, comicNum) => {
     
   } catch(e) {
     if (e instanceof NotFoundError || e instanceof BadRequestError) throw e;
-    else throw new BadRequestError(e.message);
+    else throw new BadRequestError();
   }
 
 }
@@ -35,8 +35,18 @@ const addUpvote = async (userId, comicNum) => {
 /**
  * 
  */
-const removeUpvote = async (userid, comicNum) => {
-  await db.query(``)
+const removeUpvote = async (userId, comicNum) => {
+  try {
+    const deleteQuery = await db.query(`DELETE FROM upvotes 
+      WHERE user_id=$1 AND comic_num=$2
+      RETURNING *`, 
+    [userId, comicNum]);
+    if (deleteQuery.rows.length===0) throw new NotFoundError("No rows deleted")
+    else return deleteQuery.rows[0];
+  } catch(e) {
+    if (e instanceof NotFoundError || e instanceof BadRequestError) throw e;
+    throw new BadRequestError();
+  }
 }
 
 
