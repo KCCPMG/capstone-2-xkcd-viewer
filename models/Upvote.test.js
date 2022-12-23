@@ -1,5 +1,4 @@
 const db = require("../db.js");
-const { BadRequestError } = require("../expressError.js");
 const { signup, getUser} = require("./User.js");
 const { addUpvote, removeUpvote } = require("./Upvote.js");
 process.env.NODE_ENV = "test";
@@ -21,6 +20,7 @@ beforeAll(async() => {
 })
 
 afterAll(async() => {
+  await db.query(`DELETE FROM upvotes`);
   await db.end();
 })
 

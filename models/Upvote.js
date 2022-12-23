@@ -1,11 +1,15 @@
 const db = require('../db.js');
 const { BadRequestError, NotFoundError } = require("../expressError.js");
 
-/** Add an upvote from a userid and a comicNum
+/** Add an upvote from a userid and a comicNum, returns
+ * the upvote
  * 
  * Need to make sure that that user and comic exist,
  * and that no upvote for these already exists
  * 
+ * If user or comic not found, throws a NotFoundError
+ * If upvote already exists, throws a BadRequestError
+ * Any other uncaught error throws a BadRequestError
  */
 const addUpvote = async (userId, comicNum) => {
   try {
@@ -32,8 +36,13 @@ const addUpvote = async (userId, comicNum) => {
 }
 
 
-/**
+/** Removes an upvote from a userId and a comicNum, returns
+ * the removed upvote
  * 
+ * Need to make sure that the upvote exists
+ * 
+ * If the upvote does not exist, throw NotFoundError
+ * Any other error throws a BadRequestError
  */
 const removeUpvote = async (userId, comicNum) => {
   try {
@@ -44,7 +53,7 @@ const removeUpvote = async (userId, comicNum) => {
     if (deleteQuery.rows.length===0) throw new NotFoundError("No rows deleted")
     else return deleteQuery.rows[0];
   } catch(e) {
-    if (e instanceof NotFoundError || e instanceof BadRequestError) throw e;
+    if (e instanceof NotFoundError) throw e;
     throw new BadRequestError();
   }
 }
