@@ -59,4 +59,45 @@ const removeUpvote = async (userId, comicNum) => {
 }
 
 
-module.exports = { addUpvote, removeUpvote}
+/** Get upvotes by a comicNum
+ * 
+ * Takes a comicNum, and a userId (can be null)
+ * Returns an object with the count of likes 
+ * on a given comic, and if a userId is provided,
+ * a boolean as to whether or not that user has
+ * upvoted the comic
+ * 
+ */
+const getUpvotesByComic = async (comicNum, userId) => {
+  try {
+    const upvoteQuery = await db.query(`SELECT * FROM upvotes WHERE comic_num=$1`, [comicNum]);
+
+    const retObj = {
+      count: upvoteQuery.rows.length
+    }
+
+    if (userId) {
+      retObj.upvoted = upvoteQuery.rows.some(row => row.user_id === userId)
+    } 
+
+    return retObj;
+
+  } catch(e) {
+    throw e;
+  }
+}
+
+
+/** Given a userId, returns all comicIds liked by the user */
+const getUpvotesByUser = async (userId) => {
+  try {
+    const upvoteQuery = await db.query(`SELECT comic_num FROM upvotes WHERE user_id=$1`, [userId]);
+    return upvoteQuery.rows.map(row => row.comic_num); // array of integers instead of objects
+  } catch(e) {
+    throw(e);
+  }
+}
+
+
+
+module.exports = { addUpvote, removeUpvote, getUpvotesByUser, getUpvotesByComic }

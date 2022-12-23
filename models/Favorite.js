@@ -60,5 +60,42 @@ const removeFavorite = async (userId, comicNum) => {
   }
 }
 
+/** Given a userId, returns all comicIds favorited by the user */
+getFavoritesByUser = async (userId) => {
+  try {
+    const favoritesQuery = await db.query(`SELECT comic_num FROM favorites WHERE user_id=$1`, [userId]);
+    return favoritesQuery.rows.map(row => row.comic_num) // array of integers instead of objects
+  } catch(e) {
+    throw(e);
+  } 
+}
 
-module.exports = { addFavorite, removeFavorite }
+
+/** Get favorites by a comicNum
+ * 
+ * Takes a comicNum, and a userId (can be null)
+ * Returns an object with the count of favorites
+ * on a given comic, and if a userId is provided,
+ * a boolean as to whether or not that user has 
+ * upvoted the comic
+ */
+getFavoritesByComic = async (comicNum, userId) => {
+  try {
+    const favoriteQuery = await db.query(`SELECT * FROM favorites WHERE comic_num=$1`, [comicNum]);
+
+    const retObj = {
+      count: favoriteQuery.rows.length
+    }
+
+    if (userId) {
+      retObj.favorited = favoriteQuery.rows.some(row => row.user_id === userId)
+    } 
+
+    return retObj;
+
+  } catch(e) {
+    throw e;
+  }
+}
+
+module.exports = { addFavorite, removeFavorite, getFavoritesByUser, getFavoritesByComic }

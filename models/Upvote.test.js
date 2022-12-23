@@ -1,22 +1,30 @@
 const db = require("../db.js");
 const { signup, getUser} = require("./User.js");
-const { addUpvote, removeUpvote } = require("./Upvote.js");
+const { addUpvote, removeUpvote, getUpvotesByComic, getUpvotesByUser } = require("./Upvote.js");
 process.env.NODE_ENV = "test";
 
 
 const testUser = {}
+const badUser = {}
 
 beforeAll(async() => {
   await Promise.all([
     db.query(`DELETE FROM upvotes`), 
-    db.query(`DELETE FROM users WHERE email=$1`, ["testuser@gmail.com"])
+    db.query(`DELETE FROM users WHERE email=$1`, ["testuser@gmail.com"]),
+    db.query(`DELETE FROM users WHERE email=$1`, ["baduser@aol.com"])
   ]);
-  const newUser = await signup({
+  const test_user = await signup({
     email: "testuser@gmail.com",
     username: "testuser",
     password: "testpassword"
-  })
-  Object.assign(testUser, newUser);
+  });
+  const bad_user = await signup({
+    email: 'baduser@aol.com',
+    username: 'baduser',
+    password: 'badpassword'
+  });
+  Object.assign(testUser, test_user);
+  Object.assign(badUser, bad_user);
 })
 
 afterAll(async() => {
@@ -86,4 +94,88 @@ describe("Successfully deletes an upvote", function() {
   test("rejects with NotFound with wrong comic", async() => {
     await expect(removeUpvote(testUser.id, 1)).rejects.toThrow("No rows deleted")
   })
+})
+
+
+describe("Successfully retrieves upvote by comic number", function() {
+
+  // make sure the like exists from testUser on comic 2000
+  beforeAll(async () => {
+    try {
+      await addUpvote(testUser.id, 2000);
+    } catch(e) {
+      if (e.message !== "Cannot add upvote as requested, upvote already exists") {
+        throw e;
+      }
+    }
+  })
+
+  test("returns with count of 0 for comic with no upvotes", async () => {
+    const upvotes = await getUpvotesByComic(1);
+    expect(upvotes.count).toBe(0);
+  })
+
+
+  test("returns with count of 1 for comic with 1 upvote", async () => {
+    const upvotes = await getUpvotesByComic(2000);
+    expect(upvotes.count).toBe(1);
+  })
+
+
+  test("returns with count of 0 for nonexistent comic", async() => {
+    const upvotes = await getUpvotesByComic(9999999);
+    expect(upvotes.count).toBe(0);
+  })
+
+
+  test("returns with count of 1, upvoted=true for comic with correct user", async () => {
+    const upvotes = await getUpvotesByComic(2000, testUser.id);
+    expect(upvotes.count).toBe(1);
+    expect(upvotes.upvoted).toBe(true);
+  })
+
+
+  test("returns with count of 1, upvoted=false for comic with wrong user", async () => {
+    const upvotes = await getUpvotesByComic(2000, badUser.id);
+    expect(upvotes.count).toBe(1);
+    expect(upvotes.upvoted).toBe(false);
+  })
+
+})
+
+
+describe("retrieves upvotes by user", function() {
+
+  // make sure the like exists from testUser on comic 2000
+  beforeAll(async () => {
+    try {
+      await addUpvote(testUser.id, 2000);
+    } catch(e) {
+      if (e.message !== "Cannot add upvote as requested, upvote already exists") {
+        throw e;
+      }
+    }
+  })
+
+  test("checking testUser will return an array including 2000", async () => {
+    const upvotes = await getUpvotesByUser(testUser.id);
+    expect(upvotes).toBeInstanceOf(Array);
+    expect(upvotes.length).toBe(1);
+    expect(upvotes[0]).toBe(2000);
+  })
+
+
+  test("checking badUser will return an empty array", async () => {
+    const upvotes = await getUpvotesByUser(badUser.id);
+    expect(upvotes).toBeInstanceOf(Array);
+    expect(upvotes.length).toBe(0);
+  })
+
+
+  test("checking nonexistent user will return an empty array", async () => {
+    const upvotes = await getUpvotesByUser("fake-user-id-string");
+    expect(upvotes).toBeInstanceOf(Array);
+    expect(upvotes.length).toBe(0);
+  })
+
 })
