@@ -115,7 +115,9 @@ I am returning to this after several days away to work on behavioral interview p
 I've returned to this after several days off and realized that I needed to add several additional model methods. The main one that I needed to add is a more robust version of getComic, which also returns upvote and favorite data. However, because this makes requests on more models than just the Comic model, I wanted to create a new file in models that I am calling Controls.js to handle any database logic that does not fit neatly within a single model/table. However, I realized that I also needed to add getters for my Favorite and Upvote models. I added two for each: one that searches by comic_num and the other searches for user_id. The methods that search by comic_num have been incorporated into the Controls.js getComicDetails method, and the one that searches by user_id should be useful for a logged-in user when I get to the routing.
 
 
+## December 27, 2022, 4:45 PM
 
+I've moved over to building and testing routes, and while testing the auth route, I realized that supertest will leave the app open as I had it, with the app.listen line being in app.js. I decided to follow the example of express-jobly, and create a separate server.js file just to hold the app.listen line, so that I don't leave my route tests open as I run them.
 
 
 

@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { User } = require('../models/User');
+const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const {SECRET_KEY} = require('../config.js');
 
@@ -13,6 +13,7 @@ const router = new Router();
  */
 router.post('/login', async (req, res, next) => {
   try {
+    console.log(req.body);
     const {username, password} = req.body;
     const user = await User.authenticate(username, password);
     const token = jwt.sign({id: user.id}, SECRET_KEY)

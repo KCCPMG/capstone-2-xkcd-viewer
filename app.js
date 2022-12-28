@@ -4,9 +4,9 @@ const express = require('express');
 const cors = require('cors');
 const { NotFoundError } = require('./expressError');
 const authenticateJWT = require('./middleware/auth');
-const { PORT } = require("./config.js");
 
 const comicsRouter = require('./routes/comics');
+const authRouter = require('./routes/auth');
 
 const morgan = require("morgan");
 
@@ -19,6 +19,7 @@ app.use(authenticateJWT);
 
 // app.use routes here
 app.use('/comics', comicsRouter);
+app.use('/auth', authRouter);
 
 // placeholder
 app.get("/", (req, res) => {
@@ -42,9 +43,7 @@ app.use((err, req, res, next) => {
 })
 
 
-app.listen(PORT, function() {
-  console.log(`Listening on port ${PORT}`)
-})
 
 
-// module.exports = app;
+
+module.exports = app;
