@@ -65,7 +65,17 @@ describe("POST /auth/signup", function() {
     expect(resp.body.error.message).toBe("Bad Request, please check input, make sure to avoid duplication");
   })
 
-
+  test("throws bad request error with missing credentials", async () => {
+    const resp = await request(app)
+      .post('/auth/signup')
+      .send({
+        email: "secondtestusergmail.com",
+        // username: "baduser",
+        password: "baduserpassword"
+      })
+    expect(resp.statusCode).toBe(400);
+    expect(resp.body.error.message).toBe("Bad Request, please check input, make sure to avoid duplication");
+  })
 
 
 })

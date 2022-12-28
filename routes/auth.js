@@ -23,7 +23,12 @@ router.post('/login', async (req, res, next) => {
   }
 })
 
-
+/** POST auth/signup
+ * 
+ * uses User.signup by passing it the email, username,
+ * and password from the body of the post request, return
+ * json of token
+ */
 router.post('/signup', async (req, res, next) => {
   try {
     const user = await User.signup({

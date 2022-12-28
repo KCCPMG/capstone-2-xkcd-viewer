@@ -38,8 +38,8 @@ const getComicDetails = async (comicNum, userId) => {
     return returnObj;
 
   } catch(e) {
-    // placeholder, not currently throwing
     console.log(e);
+    throw(e);
   }
 }
 
