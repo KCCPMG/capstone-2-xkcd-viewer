@@ -10,9 +10,9 @@ const app = require('../app');
 
 const testUser = {}
 beforeAll(async () => {
-  db.query(`DELETE FROM upvotes`);
-  db.query(`DELETE FROM users WHERE email=$1`, ["testuser@gmail.com"]);
-  db.query(`DELETE FROM users WHERE email=$1`, ["secondtestuser@gmail.com"]);
+  await db.query(`DELETE FROM upvotes`);
+  await db.query(`DELETE FROM users WHERE email=$1`, ["testuser@gmail.com"]);
+  await db.query(`DELETE FROM users WHERE email=$1`, ["secondtestuser@gmail.com"]);
   let newUser = await User.signup({
     email: "testuser@gmail.com",
     username: "testuser",
@@ -78,4 +78,78 @@ describe("GET /comics/:num", function() {
     expect(resp.body.error.message).toBe("Could not find this comic, please check your input");
   })
 
+})
+
+
+describe("POST /comics/addUpvote/:num", function () {
+
+  beforeAll(async () => {
+    await db.query(`DELETE FROM upvotes`);
+    const upvoteSearch = await db.query(`SELECT * FROM upvotes`);
+    if (upvoteSearch.rows.length > 0) {
+      console.log("WARNING: NOT ALL UPVOTES DELETED:")
+      console.log(upvoteSearch.rows);
+    }
+  })
+
+  test("adds upvote to comic with valid comic and user_id", async () => {
+    const resp = await request(app)
+      .post("/comics/addUpvote/2000")
+      .set('token', testUser.token)
+    if (resp.body.error) console.log(resp.body.error);
+    expect(resp.statusCode).toBe(201);
+    expect(resp.body.upvoteCount).toBe(1);
+    expect(resp.body.favoriteCount).toBe(0);
+    expect(resp.body.upvoted).toBe(true);
+    expect(resp.body.favorited).toBe(false);
+  })
+
+  test("throws an error on a duplicate upvote", async () => {
+    const resp = await request(app)
+      .post("/comics/addUpvote/2000")
+      .set('token', testUser.token)
+    expect(resp.statusCode).toBe(400)
+    expect(resp.body.error.message).toBe("Cannot add upvote as requested, upvote already exists")
+  })
+
+  test("throws a NotFoundError with bad user_id", async () => {
+    const badToken = jwt.sign('baduser', SECRET_KEY);
+    const resp = await request(app)
+      .post("/comics/addUpvote/2000")
+      .set('token', badToken)
+    expect(resp.statusCode).toBe(404)
+    expect(resp.body.error.message).toBe("Cannot add upvote as requested, user not found")
+  })
+
+  test("throws a NotFoundError with bad comic", async () => {
+    const resp = await request(app)
+      .post("/comics/addUpvote/9999999")
+      .set('token', testUser.token)
+    if (resp.body.error) console.log(resp.body);
+    expect(resp.statusCode).toBe(404)
+    expect(resp.body.error.message).toBe("Cannot add upvote as requested, comic not found")
+  })
+
+
+})
+
+describe("POST /comics/addFavorite/:num", function () {
+
+  test("", async () => {
+
+  })
+})
+
+describe("POST /comics/removeUpvote/:num", function () {
+
+  test("", async () => {
+
+  })
+})
+
+describe("POST /comics/removeFavorite/:num", function () {
+
+  test("", async () => {
+
+  })
 })

@@ -30,7 +30,7 @@ const addUpvote = async (userId, comicNum) => {
     
   } catch(e) {
     if (e instanceof NotFoundError || e instanceof BadRequestError) throw e;
-    else throw new BadRequestError();
+    else throw new BadRequestError(e.message);
   }
 
 }

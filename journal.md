@@ -120,4 +120,6 @@ I've returned to this after several days off and realized that I needed to add s
 I've moved over to building and testing routes, and while testing the auth route, I realized that supertest will leave the app open as I had it, with the app.listen line being in app.js. I decided to follow the example of express-jobly, and create a separate server.js file just to hold the app.listen line, so that I don't leave my route tests open as I run them.
 
 
+## December 28, 2022
 
+I've decided for the sake of simplicity to put all of my add/remove upvote/favorite routes onto my comics routes.

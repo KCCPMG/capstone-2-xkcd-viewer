@@ -9,10 +9,10 @@ const {SECRET_KEY} = require('../config.js');
 function authenticateJWT(req, res, next) {
   try {
     req.user_id = null;
-    console.log({
-      userId: req.user_id,
-      tokenPresent: Boolean(req.headers.token)
-    })
+    // console.log({
+    //   userId: req.user_id,
+    //   tokenPresent: Boolean(req.headers.token)
+    // })
     if (req.headers.token) {
       req.user_id = jwt.verify(req.headers.token, SECRET_KEY).id;
     }
