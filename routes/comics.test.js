@@ -10,9 +10,14 @@ const app = require('../app');
 
 const testUser = {}
 beforeAll(async () => {
-  await db.query(`DELETE FROM upvotes`);
-  await db.query(`DELETE FROM users WHERE email=$1`, ["testuser@gmail.com"]);
-  await db.query(`DELETE FROM users WHERE email=$1`, ["secondtestuser@gmail.com"]);
+  await Promise.all([
+    db.query(`DELETE FROM favorites`),
+    db.query(`DELETE FROM upvotes`)
+  ]);
+  await Promise.all([
+    db.query(`DELETE FROM users WHERE email=$1`, ["testuser@gmail.com"]),
+    db.query(`DELETE FROM users WHERE email=$1`, ["secondtestuser@gmail.com"])
+  ]);
   let newUser = await User.signup({
     email: "testuser@gmail.com",
     username: "testuser",
@@ -84,12 +89,11 @@ describe("GET /comics/:num", function() {
 describe("POST /comics/addUpvote/:num", function () {
 
   beforeAll(async () => {
-    await db.query(`DELETE FROM upvotes`);
-    const upvoteSearch = await db.query(`SELECT * FROM upvotes`);
-    if (upvoteSearch.rows.length > 0) {
-      console.log("WARNING: NOT ALL UPVOTES DELETED:")
-      console.log(upvoteSearch.rows);
-    }
+    await Promise.all([
+      db.query(`DELETE FROM upvotes`),
+      db.query(`DELETE FROM favorites`)
+    ])
+    
   })
 
   test("adds upvote to comic with valid comic and user_id", async () => {
@@ -135,10 +139,54 @@ describe("POST /comics/addUpvote/:num", function () {
 
 describe("POST /comics/addFavorite/:num", function () {
 
-  test("", async () => {
-
+  beforeAll(async () => {
+    await Promise.all([
+      db.query(`DELETE FROM upvotes`),
+      db.query(`DELETE FROM favorites`)
+    ])
+    
   })
+
+  test("adds upvote to comic with valid comic and user_id", async () => {
+    const resp = await request(app)
+      .post("/comics/addFavorite/2000")
+      .set('token', testUser.token)
+    if (resp.body.error) console.log(resp.body.error);
+    expect(resp.statusCode).toBe(201);
+    expect(resp.body.upvoteCount).toBe(0);
+    expect(resp.body.favoriteCount).toBe(1);
+    expect(resp.body.upvoted).toBe(false);
+    expect(resp.body.favorited).toBe(true);
+  })
+
+  test("throws an error on a duplicate favorite", async () => {
+    const resp = await request(app)
+      .post("/comics/addFavorite/2000")
+      .set('token', testUser.token)
+    expect(resp.statusCode).toBe(400)
+    expect(resp.body.error.message).toBe("Cannot favorite as requested, comic already favorited")
+  })
+
+  test("throws a NotFoundError with bad user_id", async () => {
+    const badToken = jwt.sign('baduser', SECRET_KEY);
+    const resp = await request(app)
+      .post("/comics/addFavorite/2000")
+      .set('token', badToken)
+    expect(resp.statusCode).toBe(404)
+    expect(resp.body.error.message).toBe("Cannot favorite as requested, user not found")
+  })
+
+  test("throws a NotFoundError with bad comic", async () => {
+    const resp = await request(app)
+      .post("/comics/addFavorite/9999999")
+      .set('token', testUser.token)
+    if (resp.body.error) console.log(resp.body);
+    expect(resp.statusCode).toBe(404)
+    expect(resp.body.error.message).toBe("Cannot favorite as requested, comic not found")
+  })
+
 })
+
 
 describe("POST /comics/removeUpvote/:num", function () {
 

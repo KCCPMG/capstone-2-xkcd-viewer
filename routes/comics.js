@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const Comic = require('../models/Comic');
 const Upvote = require('../models/Upvote');
+const Favorite = require('../models/Favorite');
 const Controls = require('../models/Controls');
 
 const router = new Router();;
@@ -31,11 +32,8 @@ router.get('/:num', async (req, res, next) => {
 
 router.post('/addUpvote/:num', async (req, res, next) => {
   try {
-    console.log(req.user_id);
-    console.log("sanity 1");
     const comicNum = Number(req.params.num);
     await Upvote.addUpvote(req.user_id, comicNum);
-    console.log("sanity 2");
     const comic = await Controls.getComicDetails(req.params.num, req.user_id);
     res.status(201);
     res.json(comic);
@@ -45,9 +43,13 @@ router.post('/addUpvote/:num', async (req, res, next) => {
 })
 
 
-router.post('/favorite/:num', async (req, res, next) => {
+router.post('/addFavorite/:num', async (req, res, next) => {
   try {
-
+    const comicNum = Number(req.params.num);
+    await Favorite.addFavorite(req.user_id, comicNum);
+    const comic = await Controls.getComicDetails(req.params.num, req.user_id);
+    res.status(201);
+    res.json(comic);
   } catch(e) {
     return next(e);
   }
