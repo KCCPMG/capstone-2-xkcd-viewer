@@ -30,7 +30,7 @@ router.get('/:num', async (req, res, next) => {
 })
 
 
-router.post('/addUpvote/:num', async (req, res, next) => {
+router.post('/upvote/:num', async (req, res, next) => {
   try {
     const comicNum = Number(req.params.num);
     await Upvote.addUpvote(req.user_id, comicNum);
@@ -43,7 +43,7 @@ router.post('/addUpvote/:num', async (req, res, next) => {
 })
 
 
-router.post('/addFavorite/:num', async (req, res, next) => {
+router.post('/favorite/:num', async (req, res, next) => {
   try {
     const comicNum = Number(req.params.num);
     await Favorite.addFavorite(req.user_id, comicNum);
@@ -56,18 +56,26 @@ router.post('/addFavorite/:num', async (req, res, next) => {
 })
 
 
-router.post('/removeUpvote/:num', async (req, res, next) => {
+router.delete('/upvote/:num', async (req, res, next) => {
   try {
-
+    const comicNum = Number(req.params.num);
+    await Upvote.removeUpvote(req.user_id, comicNum);
+    const comic = await Controls.getComicDetails(req.params.num, req.user_id);
+    res.status(200);
+    res.json(comic);
   } catch(e) {
     return next(e);
   }
 })
 
 
-router.post('/removeFavorite/:num', async (req, res, next) => {
+router.delete('/favorite/:num', async (req, res, next) => {
   try {
-
+    const comicNum = Number(req.params.num);
+    await Favorite.removeFavorite(req.user_id, comicNum);
+    const comic = await Controls.getComicDetails(req.params.num, req.user_id);
+    res.status(200);
+    res.json(comic);
   } catch(e) {
     return next(e);
   }
