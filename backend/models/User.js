@@ -63,12 +63,12 @@ const authenticate = async(username, password) => {
     const userQuery = await db.query(`SELECT * FROM users WHERE username=$1`, [username]);
     // console.log(userQuery);
     const foundUser = userQuery.rows[0]
-    console.log(foundUser);
+    // console.log(foundUser);
     const check = await bcrypt.compare(password, foundUser.hashed_password);
     if (check) return foundUser;
     else throw new UnauthorizedError();
   } catch(e) {
-    console.log(e);
+    // console.log(e);
     throw new UnauthorizedError();
   }
 
