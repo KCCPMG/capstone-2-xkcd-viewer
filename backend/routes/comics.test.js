@@ -40,7 +40,9 @@ describe("GET /comics/:num", function() {
 
     expect(resp.body.num).toBe(1);
     expect(resp.body.year).toBe("2006");
-    expect(resp.body.transcript).toContain("[[The barrel drifts into the distance. Nothing else can be seen.]]")
+    expect(resp.body.transcript).toContain("[[The barrel drifts into the distance. Nothing else can be seen.]]");
+    expect(resp.body.prev).toBe(null);
+    expect(resp.body.subsequent).toBe(2);
     expect(resp.body).not.toHaveProperty('upvoted');
     expect(resp.body).not.toHaveProperty('favorited');
     
@@ -52,7 +54,9 @@ describe("GET /comics/:num", function() {
       .set('token', testUser.token)
     expect(resp.body.num).toBe(1);
     expect(resp.body.year).toBe("2006");
-    expect(resp.body.transcript).toContain("[[The barrel drifts into the distance. Nothing else can be seen.]]")
+    expect(resp.body.transcript).toContain("[[The barrel drifts into the distance. Nothing else can be seen.]]");
+    expect(resp.body.prev).toBe(null);
+    expect(resp.body.subsequent).toBe(2);
     expect(resp.body).toHaveProperty('upvoted');
     expect(resp.body).toHaveProperty('favorited');
     expect(resp.body.upvoteCount).toBe(0);
@@ -68,7 +72,9 @@ describe("GET /comics/:num", function() {
       .set('token', testUser.token)
     expect(resp.body.num).toBe(1);
     expect(resp.body.year).toBe("2006");
-    expect(resp.body.transcript).toContain("[[The barrel drifts into the distance. Nothing else can be seen.]]")
+    expect(resp.body.transcript).toContain("[[The barrel drifts into the distance. Nothing else can be seen.]]");
+    expect(resp.body.prev).toBe(null);
+    expect(resp.body.subsequent).toBe(2);
     expect(resp.body).toHaveProperty('upvoted');
     expect(resp.body).toHaveProperty('favorited');
     expect(resp.body.upvoteCount).toBe(1);
@@ -94,7 +100,7 @@ describe("POST /comics/upvote/:num", function () {
       db.query(`DELETE FROM upvotes`),
       db.query(`DELETE FROM favorites`)
     ])
-  })
+  });
 
   test("adds upvote to comic with valid comic and user_id", async () => {
     const resp = await request(app)
@@ -106,7 +112,7 @@ describe("POST /comics/upvote/:num", function () {
     expect(resp.body.favoriteCount).toBe(0);
     expect(resp.body.upvoted).toBe(true);
     expect(resp.body.favorited).toBe(false);
-  })
+  });
 
   test("throws an error on a duplicate upvote", async () => {
     const resp = await request(app)
@@ -114,7 +120,7 @@ describe("POST /comics/upvote/:num", function () {
       .set('token', testUser.token)
     expect(resp.statusCode).toBe(400)
     expect(resp.body.error.message).toBe("Cannot add upvote as requested, upvote already exists")
-  })
+  });
 
   test("throws a NotFoundError with bad user_id", async () => {
     const badToken = jwt.sign('baduser', SECRET_KEY);
@@ -123,7 +129,7 @@ describe("POST /comics/upvote/:num", function () {
       .set('token', badToken)
     expect(resp.statusCode).toBe(404)
     expect(resp.body.error.message).toBe("Cannot add upvote as requested, user not found")
-  })
+  });
 
   test("throws a NotFoundError with bad comic", async () => {
     const resp = await request(app)
@@ -132,7 +138,7 @@ describe("POST /comics/upvote/:num", function () {
     if (resp.body.error) console.log(resp.body);
     expect(resp.statusCode).toBe(404)
     expect(resp.body.error.message).toBe("Cannot add upvote as requested, comic not found")
-  })
+  });
 
 
 })
@@ -143,9 +149,9 @@ describe("POST /comics/favorite/:num", function () {
     await Promise.all([
       db.query(`DELETE FROM upvotes`),
       db.query(`DELETE FROM favorites`)
-    ])
+    ]);
     
-  })
+  });
 
   test("adds upvote to comic with valid comic and user_id", async () => {
     const resp = await request(app)
@@ -157,7 +163,7 @@ describe("POST /comics/favorite/:num", function () {
     expect(resp.body.favoriteCount).toBe(1);
     expect(resp.body.upvoted).toBe(false);
     expect(resp.body.favorited).toBe(true);
-  })
+  });
 
   test("throws an error on a duplicate favorite", async () => {
     const resp = await request(app)
@@ -165,7 +171,7 @@ describe("POST /comics/favorite/:num", function () {
       .set('token', testUser.token)
     expect(resp.statusCode).toBe(400)
     expect(resp.body.error.message).toBe("Cannot favorite as requested, comic already favorited")
-  })
+  });
 
   test("throws a NotFoundError with bad user_id", async () => {
     const badToken = jwt.sign('baduser', SECRET_KEY);
@@ -174,7 +180,7 @@ describe("POST /comics/favorite/:num", function () {
       .set('token', badToken)
     expect(resp.statusCode).toBe(404)
     expect(resp.body.error.message).toBe("Cannot favorite as requested, user not found")
-  })
+  });
 
   test("throws a NotFoundError with bad comic", async () => {
     const resp = await request(app)
@@ -183,7 +189,7 @@ describe("POST /comics/favorite/:num", function () {
     if (resp.body.error) console.log(resp.body);
     expect(resp.statusCode).toBe(404)
     expect(resp.body.error.message).toBe("Cannot favorite as requested, comic not found")
-  })
+  });
 
 })
 
@@ -194,9 +200,9 @@ describe("DELETE /comics/upvote/:num", function () {
     await Promise.all([
       db.query(`DELETE FROM upvotes`),
       db.query(`DELETE FROM favorites`)
-    ])
+    ]);
     await Upvote.addUpvote(testUser.id, 1000);
-  })
+  });
 
   test("successfully deletes an upvote", async () => {
     const resp = await request(app)
@@ -207,7 +213,7 @@ describe("DELETE /comics/upvote/:num", function () {
     expect(resp.body.favoriteCount).toBe(0);
     expect(resp.body.upvoted).toBe(false);
     expect(resp.body.favorited).toBe(false);
-  })
+  });
 
   test("throws a NotFoundError when making an invalid upvote delete", async () => {
     // already deleted
@@ -216,9 +222,7 @@ describe("DELETE /comics/upvote/:num", function () {
       .set('token', testUser.token);
     expect(resp.statusCode).toBe(404)
     expect(resp.body.error.message).toBe("No rows deleted")
-  })
-
-
+  });
 
 })
 
@@ -231,7 +235,7 @@ describe("DELETE /comics/favorite/:num", function () {
       db.query(`DELETE FROM favorites`)
     ])
     await Favorite.addFavorite(testUser.id, 1000);
-  })
+  });
 
   test("successfully deletes a favorite", async () => {
     const resp = await request(app)
@@ -242,7 +246,7 @@ describe("DELETE /comics/favorite/:num", function () {
     expect(resp.body.favoriteCount).toBe(0);
     expect(resp.body.upvoted).toBe(false);
     expect(resp.body.favorited).toBe(false);
-  })
+  });
 
   test("throws a NotFoundError when making an invalid favorite delete", async () => {
     const resp = await request(app)
@@ -250,6 +254,6 @@ describe("DELETE /comics/favorite/:num", function () {
       .set('token', testUser.token);
     expect(resp.statusCode).toBe(404)
     expect(resp.body.error.message).toBe("No rows deleted")
-  })
+  });
 
 })

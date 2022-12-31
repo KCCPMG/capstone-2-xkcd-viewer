@@ -44,7 +44,9 @@ const basic2000 = {
   title: 'xkcd Phone 2000',
   day: '30',
   upvoteCount: 0,
-  favoriteCount: 0
+  favoriteCount: 0,
+  prev: 1999,
+  subsequent: 2001
 }
 
 

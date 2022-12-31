@@ -11,7 +11,8 @@ const { BadRequestError, NotFoundError } = require("../expressError.js");
  */
 const getComic = async (num) => {
   try {
-    const result = await db.query(`SELECT * FROM comics WHERE num=$1`, [num]);
+    // const result = await db.query(`SELECT * FROM comics WHERE num=$1`, [num]);
+    const result = await db.query(`SELECT * FROM (SELECT *, LAG(num) OVER (ORDER BY num ASC) AS prev, LEAD(num) OVER (ORDER BY num ASC) as subsequent FROM comics) AS foo WHERE num=$1`, [num]);
     if (result.rows.length === 1) return result.rows[0];
     else throw new NotFoundError("Could not find this comic, please check your input");
 

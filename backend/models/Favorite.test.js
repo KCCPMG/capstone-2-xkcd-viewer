@@ -57,7 +57,8 @@ describe("Successfully adds a favorite", function() {
 
   test("rejects when a favorite has already been added", async () => {
     await db.query(`DELETE FROM favorites`);
-    const favorite = await addFavorite(testUser.id, 2000);
+    const favorite = await addFavorite(testUser.id, 2000); 
+    // repeat operation
     await expect(addFavorite(testUser.id, 2000)).rejects.toThrow("Cannot favorite as requested, comic already favorited");
   })
 
@@ -99,7 +100,7 @@ describe("Successfully deletes a favorite", function() {
 
 describe("Successfully retrieves favorites by comic number", function() {
 
-  // make sure the like exists from testUser on comic 2000
+  // make sure the favorite exists from testUser on comic 2000
   beforeAll(async () => {
     try {
       await addFavorite(testUser.id, 2000);

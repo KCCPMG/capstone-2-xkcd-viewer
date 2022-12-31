@@ -7,14 +7,13 @@ afterAll(async () => await db.end());
 
 
 describe("Testing Comic.js", function() {
-  test("Should not fail", function(){
-    expect(2).toBe(2);
-  })
 
   test("Should return a valid comic when there is one", async function(){
     const comic = await getComic(1);
     expect(comic.num).toBe(1);
     expect(comic.year).toBe("2006");
+    expect(comic.prev).toBe(null)
+    expect(comic.subsequent).toBe(2);
     expect(comic.transcript).toContain(`[[The barrel drifts into the distance. Nothing else can be seen.]]`);
   })
 
@@ -43,7 +42,11 @@ describe("Testing Comic.js", function() {
     expect(addResults).toStrictEqual(newComic);
 
     const comic = await getComic(2709);
-    expect(comic).toStrictEqual(newComic);
+    // check prev and subsequent as well
+    expect(comic).toStrictEqual(Object.assign(newComic, {
+      prev: 2707,
+      subsequent: null
+    }));
 
     await db.query(`DELETE FROM comics WHERE num=2709;`)
     await expect(getComic(2709)).rejects.toThrow("Could not find this comic, please check your input")
@@ -66,12 +69,6 @@ describe("Testing Comic.js", function() {
     }
 
     await expect(addComic(newComic)).rejects.toThrow("Bad Request: Could not create comic, please check your input")
-
-    // try {
-    //   const addResults = await addComic(newComic);
-    // } catch(e) {
-    //   expect(e.status).toBe(4000);
-    // }
   })
 
 })

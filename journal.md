@@ -120,12 +120,12 @@ I've returned to this after several days off and realized that I needed to add s
 I've moved over to building and testing routes, and while testing the auth route, I realized that supertest will leave the app open as I had it, with the app.listen line being in app.js. I decided to follow the example of express-jobly, and create a separate server.js file just to hold the app.listen line, so that I don't leave my route tests open as I run them.
 
 
-## December 28, 2022
+## December 28, 2022, 12:00 PM
 
 I've decided for the sake of simplicity to put all of my add/remove upvote/favorite routes onto my comics routes.
 
 
-## December 30, 2022
+## December 30, 2022, 11:20 AM
 
 I slightly modified some of my comics routes, so that now adding upvotes and favorites will be POSTs to "/comics/upvotes" etc., and deletions will be DELETE requests to the same address. This is now done and all tests are passing on these essential backend operations, though there is opportunity to add other features such as:
 
@@ -135,3 +135,25 @@ I slightly modified some of my comics routes, so that now adding upvotes and fav
 These can be implemented down the raod, however at this point I believe that it's prudent to switch to working on the frontend to get everything up and running as much as possible before adding any additional features. 
 
 I want to keep everything in a single git repository, which means that I need to reorganize my file structure slightly to create just "backend" and "frontend" folders as the only folders in this directory with everything else flowing through there. I will also need to delete the default git repo that comes with create-react-app once I get to that point. Right now with all of my backend tests passing, I need to make a commit before tampering with my file structure. 
+
+
+## December 30, 2022, 12:05 PM
+
+Now that I have the front-end to work on, I need to consider how I want the front-end to look and work. Since the server is not rendering anything but is just an API, I need to handle routing and use the React Router. I need the following pages:
+
+-Random comic (home)
+-Login
+-Signup
+-View Comic (with upvote and favorite options if logged in, prompt to log in if not)
+-Logout (redirect to home)
+-Logged in user's upvotes (requires more backend work)
+-Logged in user's favorites (requires more backend work)
+
+
+As far as state, the most critical thing that I keep track of across all pages is the token, but I also need to keep track of the username and user email. 
+
+I intend to make a Comic component which will include the buttons for upvoting and favoriting, though I am also realizing that I want to add controls (and will also require the backend functionality for) to do the following:
+
+-Go to the next comic
+-Go to the previous comic
+-Go to a random comic
