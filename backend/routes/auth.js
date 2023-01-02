@@ -17,7 +17,7 @@ router.post('/login', async (req, res, next) => {
     const {username, password} = req.body;
     const user = await User.authenticate(username, password);
     const token = jwt.sign({id: user.id}, SECRET_KEY)
-    return res.json(token);
+    return res.json({token});
   } catch(e) {
     return next(e);
   }
@@ -37,7 +37,7 @@ router.post('/signup', async (req, res, next) => {
       password: req.body.password
     })
     const token = jwt.sign({id: user.id}, SECRET_KEY)
-    res.json(token);
+    res.json({token});
   } catch(e) {
     return next(e);
   }

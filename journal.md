@@ -157,3 +157,18 @@ I intend to make a Comic component which will include the buttons for upvoting a
 -Go to the next comic
 -Go to the previous comic
 -Go to a random comic
+
+
+## December 31, 12:30 PM
+
+I added a "prev" and "subsequent" to the Comic.getComic function using the LAG and LEAD commands in SQL and made sure that everything still worked well downstream.
+
+
+## January 2, 10:00 AM
+
+It seems that I may have been too hasty to jump into buidling components on the front end, when I have Context and the all-purpose Api issues to worry about first. I'm switching to building up my API class using React-Jobly as a guide. Once I have the basics up, I'll build the signup, login, and logout static methods, and build the login and logout components to make sure that this is working.
+
+
+## January 2, 11:00 AM
+
+I've realized that my backend is currently returning a token without announcing it (token) instead of {token}, and so the front end api methods that need to retrieve the token will have a difficult time actually determining if there is a token. As a result, I'm going to make modifications to my authRouter and its tests to return {token}

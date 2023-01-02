@@ -36,7 +36,7 @@ describe("POST /auth/signup", function() {
         password: "secondtestpassword"
       })
     expect(resp.statusCode).toBe(200);
-    const token = resp.body;
+    const token = resp.body.token;
     expect(jwt.verify(token, SECRET_KEY).id).toBeTruthy();
   })
 
@@ -90,7 +90,7 @@ describe("POST /auth/login", function() {
         "password": "testpassword"
       });
     expect(resp.statusCode).toBe(200);
-    const token = resp.body;
+    const token = resp.body.token;
     expect(jwt.verify(token, SECRET_KEY).id).toBe(testUser.id);
   })
 
