@@ -37,7 +37,12 @@ describe("POST /auth/signup", function() {
       })
     expect(resp.statusCode).toBe(200);
     const token = resp.body.token;
-    expect(jwt.verify(token, SECRET_KEY).id).toBeTruthy();
+    const decodedToken = jwt.verify(token, SECRET_KEY);
+    expect(decodedToken.username).toBe("secondtestuser");
+    expect(decodedToken.email).toBe("secondtestuser@gmail.com");
+    expect(decodedToken).toHaveProperty('id');
+    expect(decodedToken).toHaveProperty('iat');
+    // expect(jwt.verify(token, SECRET_KEY).id).toBeTruthy();
   })
 
   test("throws bad request error with duplicate credentials", async () => {
@@ -91,7 +96,11 @@ describe("POST /auth/login", function() {
       });
     expect(resp.statusCode).toBe(200);
     const token = resp.body.token;
-    expect(jwt.verify(token, SECRET_KEY).id).toBe(testUser.id);
+    const decodedToken = jwt.verify(token, SECRET_KEY);
+    expect(decodedToken.username).toBe(testUser.username);
+    expect(decodedToken.email).toBe(testUser.email);
+    expect(decodedToken.id).toBe(testUser.id);
+    expect(decodedToken).toHaveProperty('iat');
   })
 
   test("successfully throws unauthorized error with wrong credentials", async () => {

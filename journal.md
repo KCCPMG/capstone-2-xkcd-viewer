@@ -171,4 +171,4 @@ It seems that I may have been too hasty to jump into buidling components on the 
 
 ## January 2, 11:00 AM
 
-I've realized that my backend is currently returning a token without announcing it (token) instead of {token}, and so the front end api methods that need to retrieve the token will have a difficult time actually determining if there is a token. As a result, I'm going to make modifications to my authRouter and its tests to return {token}
+I've realized that my backend is currently returning a token without announcing it (token) instead of {token}, and so the front end api methods that need to retrieve the token will have a difficult time actually determining if there is a token. As a result, I'm going to make modifications to my authRouter and its tests to return {token}. I also realized that the entire user object in this case is just the id, username, and password, and so I should be returning all of those things rather than just the id. This will save me from having to write a second request for user information after any successfull signup/login.
