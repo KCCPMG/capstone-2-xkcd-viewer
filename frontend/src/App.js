@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 
-import LoginContext from './helpers/LoginContext';
+import UserContext from './helpers/UserContext';
 
 import Router from './components/Router';
 
@@ -9,14 +9,15 @@ import Router from './components/Router';
 function App() {
   return (
     <div className="App">
-      <LoginContext.Provider value={{
+      <UserContext.Provider value={{
         loggedIn: false,
         token: null,
+        id: null,
         username: null,
         email: null
       }}>
         <Router />
-      </LoginContext.Provider>
+      </UserContext.Provider>
     </div>
   );
 }

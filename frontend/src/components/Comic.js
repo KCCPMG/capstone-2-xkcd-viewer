@@ -1,9 +1,9 @@
 import React, {useState, useEffect, useContext} from 'react';
 import axios from 'axios';
-import LoginContext from '../helpers/LoginContext';
+import LoginContext from '../helpers/UserContext';
 import { useParams } from 'react-router-dom';
 
-const SERVER_URL = "http://localhost:5000";
+
 
 
 
@@ -11,7 +11,7 @@ const SERVER_URL = "http://localhost:5000";
 
 function Comic() {
 
-  const status = useContext(LoginContext)
+  const status = useContext(LoginContext);
   const {comicNum} = useParams();
 
 
