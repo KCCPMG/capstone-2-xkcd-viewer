@@ -8,12 +8,12 @@ function Login() {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-  const {user, login} = useContext(UserContext);
+  const user = useContext(UserContext);
 
 
   const handleLogin = (e) => {
     e.preventDefault();
-    
+
   }
 
   // if there is a user, redirect home

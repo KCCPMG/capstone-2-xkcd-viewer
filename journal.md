@@ -172,3 +172,8 @@ It seems that I may have been too hasty to jump into buidling components on the 
 ## January 2, 11:00 AM
 
 I've realized that my backend is currently returning a token without announcing it (token) instead of {token}, and so the front end api methods that need to retrieve the token will have a difficult time actually determining if there is a token. As a result, I'm going to make modifications to my authRouter and its tests to return {token}. I also realized that the entire user object in this case is just the id, username, and password, and so I should be returning all of those things rather than just the id. This will save me from having to write a second request for user information after any successfull signup/login.
+
+
+## January 4, 9:55 AM
+
+While working through getting my front end api methods together, I realized that I needed to import jsonwebtoken so that I could decode the token that I was getting back from the server. Unfortunately, when I tried to install it, it resulted in a breaking change due to React webpack issues. I used the "Chainsafe" approach laid out in [https://ddf46429.springboard.com/uploads/resources/1643912754_Documentation_For_Create_React_App_Issue_2_.pdf](https://ddf46429.springboard.com/uploads/resources/1643912754_Documentation_For_Create_React_App_Issue_2_.pdf), then was able to successfully install jsonwebtoken, and it now looks as though everything is working so that I can keep going.

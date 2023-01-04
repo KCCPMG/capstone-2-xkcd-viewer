@@ -4,6 +4,8 @@ import LoginContext from '../helpers/UserContext';
 import { useParams } from 'react-router-dom';
 
 
+// testing only
+const SERVER_URL = "http://localhost:5000";
 
 
 
