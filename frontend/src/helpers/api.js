@@ -6,12 +6,32 @@ const SERVER_URL = "http://localhost:5000";
 
 class xkcdAPI {
   // encapsulated token remains private to this class
-  static token;
+  static #token;
+
+  /** Get a token from localStorage, return body */
+  static async loadToken() {
+    if (!this.#token) {
+      if (localStorage.token) {
+        this.#token = localStorage.getItem('token');
+      }
+    }
+    console.log("xkcdAPIToken:", this.#token);
+    if (this.#token) return jwt.decode(this.#token);
+    else return undefined;
+  }
+
+
+  /** Remove a token from local storage, and from here */
+  static async removeToken() {
+    localStorage.removeItem('token');
+    this.#token = undefined;
+  }
+
 
   static async request(endpoint, data, method) {
     const url = `${SERVER_URL}/${endpoint}`;
     // assign token to all requests
-    const headers = {token: this.token};
+    const headers = {token: this.#token};
     // if this is a get request, paramater object from data, else empty parameter object
     const params = (method === "get") ? data : {};
     
@@ -31,18 +51,22 @@ class xkcdAPI {
 
   // auth routes
 
-  /** Sign up a new user */
+  /** Sign up a new user, set localStorage token,  */
   static async signup(email, username, password) {
-    console.log(email, username, password);
+    // console.log(email, username, password);
     const data = await this.request('auth/signup', {email, username, password}, 'POST');
-    console.log(data);
-    this.token = data.token;
-    return 
+    // console.log(data);
+    this.#token = data.token;
+    localStorage.setItem('token', data.token);
+    return jwt.decode(this.#token);
   }
 
-  /** */
+  /** Login a user, set localStorage token */
   static async login(username, password) {
-    await this.request('auth/login', {username, password}, 'POST')   
+    const data = await this.request('auth/login', {username, password}, 'POST');
+    this.#token = data.token;
+    localStorage.setItem('token', data.token);
+    return jwt.decode(this.#token);
   }
 
   /** */

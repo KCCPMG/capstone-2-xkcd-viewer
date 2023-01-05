@@ -1,4 +1,4 @@
-import {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserContext from '../helpers/UserContext';
 import xkcdAPI from '../helpers/api';
@@ -9,16 +9,22 @@ function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [warning, setWarning] = useState("");
+  // const [warning, setWarning] = useState("");
 
-  const {id} = useContext(UserContext);
   const navigate = useNavigate();
+  const {user, login} = useContext(UserContext);
 
 
-  const submitForm = (e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
     if (password === confirmPassword) {
-      xkcdAPI.signup(email, username, password);
+      xkcdAPI.signup(email, username, password).then((userObj => {
+        // console.log(user);
+        // console.log(userObj);
+        login(userObj);
+        // console.log(user);
+        // navigate('/');
+      }));
     }
   }
 
@@ -31,11 +37,13 @@ function Signup() {
   }
 
 
-  useEffect(function() {
-    if (id) {
+  useEffect(function () {
+    console.log("checking for user.id");
+    if (user.id) {
+      console.log("should navigate to '/'")
       navigate('/');
     }
-  }, [id])
+  }, [user])
 
   return (
     <form className="container m-auto p-5">

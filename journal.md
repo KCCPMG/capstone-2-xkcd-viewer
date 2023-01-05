@@ -177,3 +177,15 @@ I've realized that my backend is currently returning a token without announcing 
 ## January 4, 9:55 AM
 
 While working through getting my front end api methods together, I realized that I needed to import jsonwebtoken so that I could decode the token that I was getting back from the server. Unfortunately, when I tried to install it, it resulted in a breaking change due to React webpack issues. I used the "Chainsafe" approach laid out in [https://ddf46429.springboard.com/uploads/resources/1643912754_Documentation_For_Create_React_App_Issue_2_.pdf](https://ddf46429.springboard.com/uploads/resources/1643912754_Documentation_For_Create_React_App_Issue_2_.pdf), then was able to successfully install jsonwebtoken, and it now looks as though everything is working so that I can keep going.
+
+
+## January 5, 11:45 AM
+
+For some reason that I cannot identify, my Signup component's useEffect is not correctly checking the user object, even though I believe that I have correctly placed it in the array after the callback function and I can verify that the user object itself is changing to accurately reflect a newly signed up user. As a result, I am now simply navigating away in my callback function after the api method is successfully called.
+
+I am also trying to make the token in the api class truly private by using a # symbol. This way I should be able to expose the token to components only through methods from my api.
+
+
+## January 5, 1:00 PM
+
+While getting my storage token functionality set up, I realized that the reason that my user object changing after signup was not calling my useEffect hook was that in App.js I was not using my setState method. Now that that has been corrected, my useEffect can navigate more honestly than simply calling `navigate('/')`.
