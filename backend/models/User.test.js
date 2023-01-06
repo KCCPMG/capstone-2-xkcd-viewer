@@ -25,11 +25,6 @@ afterAll(async () => await db.end());
 
 describe("Testing signup", function(){
 
-
-  test("Should not fail", function(){
-    expect(2).toBe(2);
-  })
-
   test("signup adds new user", async function(){
 
     const newSavedUser = await signup(newUser);
@@ -42,17 +37,35 @@ describe("Testing signup", function(){
     
   })
 
-  test("signup with existing user throws BadRequestError", async function() {
+  test("signup with existing email throws BadRequestError", async function() {
     await signup(newUser);
-    await expect(signup(newUser)).rejects.toThrow("Bad Request, please check input, make sure to avoid duplication")
+    await expect(signup(newUser)).rejects.toThrow("Could not register user, an account already exists with this email")
   })
 
 
-  test("signup with bad data throws BadRequestError", async function() {
+  test("signup with existing username throws BadRequestError", async function() {
+    // email different, username the same
+    const duplicateUser = Object.assign({}, newUser, {email: "uniqueemail@soandso.com"})
+    await signup(newUser);
+    await expect(signup(duplicateUser)).rejects.toThrow("Could not register user, an account already exists with this username")
+  })
+
+
+  test("signup with missing data throws BadRequestError", async function() {
     const badUser = {
       firstName: "Charles"
     }
-    await expect(signup(badUser)).rejects.toThrow("Bad Request, please check input, make sure to avoid duplication")
+    await expect(signup(badUser)).rejects.toThrow("Could not register user, please complete all fields");
+  })
+
+
+  test("signup with invalid email address throws BadRequestError", async function() {
+    const badUser = {
+      email: "invalid",
+      username: "invaliduser",
+      password: "password"
+    }
+    await expect(signup(badUser)).rejects.toThrow("Could not register user, invalid email address")
   })
 
 })

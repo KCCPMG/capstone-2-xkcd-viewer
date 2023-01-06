@@ -4,6 +4,14 @@ const { BCRYPT_WORK_FACTOR } = require("../config.js");
 const { BadRequestError, NotFoundError, UnauthorizedError } = require("../expressError.js");
 const bcrypt = require('bcrypt');
 
+
+// error message strings
+const DUPLICATE_EMAIL="Could not register user, an account already exists with this email address";
+const DUPLICATE_USERNAME="Could not register user, an account already exists with this username";
+const INVALID_EMAIL="Could not register user, invalid email address";
+const INCOMPLETE_USER="Could not register user, please complete all fields";
+
+
 /** Get a saved user
  * 
  * Takes an id, searches users table and returns document
@@ -46,10 +54,17 @@ const signup = async(userObj) => {
 
     return signupQuery.rows[0];
 
-
   } catch(e) {
-    // console.log(e);
-    throw new BadRequestError("Bad Request, please check input, make sure to avoid duplication");
+    console.log(e.message, userObj);
+    if (e.message==="duplicate key value violates unique constraint \"users_email_key\"") {
+      throw new BadRequestError(DUPLICATE_EMAIL);
+    } else if (e.message==="duplicate key value violates unique constraint \"users_username_key\"") {
+      throw new BadRequestError(DUPLICATE_USERNAME);
+    } else if (e.message==="new row for relation \"users\" violates check constraint \"users_email_check\"") {
+      throw new BadRequestError(INVALID_EMAIL);
+    } else if (e.message==="data and salt arguments required") {
+      throw new BadRequestError(INCOMPLETE_USER)
+    } else throw new BadRequestError("Bad Request, please check input, make sure to avoid duplication");
   }
 
 }
