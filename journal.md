@@ -189,3 +189,18 @@ I am also trying to make the token in the api class truly private by using a # s
 ## January 5, 1:00 PM
 
 While getting my storage token functionality set up, I realized that the reason that my user object changing after signup was not calling my useEffect hook was that in App.js I was not using my setState method. Now that that has been corrected, my useEffect can navigate more honestly than simply calling `navigate('/')`.
+
+
+## January 6, 11:55 AM
+
+I decided to create some new error message strings for BadRequestErrors that come through when attempting to sign up. These are meant to be user-readable and I intend to built a flash component to be used across the app.
+
+
+## January 6, 1:40 PM
+
+I need to create a way to implement flash messages, and my initial plan to do this is to create a new piece of context which will pass additional bits of state containing a message string, a string indicating the color of the container, and a countdown that will be used to delete the flash message after it has been seen.
+
+
+## January 7, 10:00 AM
+
+I created a basic way of handling flash messages with the location and effect hooks, but when I was using it in development mode, test messages would appear and then immediately disasppear as though the page had been navigated away from, even if there hadn't been any action taken on the page since the refresh. I made a build of the app and tried it again and it worked, so it seemed that the issue was due to double rendering in development mode. I looked it up and found out that the double rendering in development mode was due to rendering App inside of React.StrictMode in index.js, so I have commented out those wrapper elements for now but will have to put them back when I am done working on the flash element.

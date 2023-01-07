@@ -15,7 +15,7 @@ class xkcdAPI {
         this.#token = localStorage.getItem('token');
       }
     }
-    console.log("xkcdAPIToken:", this.#token);
+    // console.log("xkcdAPIToken:", this.#token);
     if (this.#token) return jwt.decode(this.#token);
     else return undefined;
   }

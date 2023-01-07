@@ -5,7 +5,7 @@ import UserContext from "../helpers/UserContext";
 function Navbar() {
 
   const {user} = useContext(UserContext);
-  console.log(user);
+  // console.log(user);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark justify-content-between">
@@ -41,6 +41,9 @@ function Navbar() {
           {user.username 
             ? 
             <>
+              <li className="nav-item">
+                <Link className="nav-link" to="/favorites">Favorites</Link>
+              </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/">{user.username}</Link>
               </li>
