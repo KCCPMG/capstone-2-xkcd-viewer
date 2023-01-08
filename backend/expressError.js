@@ -47,12 +47,12 @@ class NotFoundError extends ExpressError {
 /** Unauthorized Error to handle bad login
  * 
  * Unless given an explicit message argument, message defaults to
- * "Bad Login"
+ * "Invalid credentials, please try again"
  * 
  * Status will always be 401
  */
 class UnauthorizedError extends ExpressError {
-  constructor(message="Bad Login") {
+  constructor(message="Invalid credentials, please try again") {
     super(message, 401);
   }
 }

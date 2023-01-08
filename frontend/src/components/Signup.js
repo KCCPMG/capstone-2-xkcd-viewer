@@ -1,6 +1,7 @@
 import React, {useState, useContext, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserContext from '../helpers/UserContext';
+import FlashContext from '../helpers/FlashContext';
 import xkcdAPI from '../helpers/api';
 
 function Signup() {
@@ -13,18 +14,28 @@ function Signup() {
 
   const navigate = useNavigate();
   const {user, login} = useContext(UserContext);
+  const {addMessages} = useContext(FlashContext)
 
 
   const submitForm = async (e) => {
     e.preventDefault();
     if (password === confirmPassword) {
-      xkcdAPI.signup(email, username, password).then((userObj => {
+      xkcdAPI.signup(email, username, password)
+      .then((userObj => {
         // console.log(user);
         // console.log(userObj);
         login(userObj);
         // console.log(user);
         // navigate('/');
-      }));
+      }))
+      .catch((errors) => {
+        addMessages(errors.map(err => {
+          return {
+            text: err,
+            type: "danger"
+          }
+        }));
+      })
     }
   }
 

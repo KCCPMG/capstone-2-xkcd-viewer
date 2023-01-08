@@ -14,24 +14,29 @@ function Message(props) {
 function Flash() {
 
   const location = useLocation();
-  const {messages, setMessages} = useContext(FlashContext);
+  const {messages, cycleMessages} = useContext(FlashContext);
   console.log(location);
-  console.log(`Load Flash - ${location.pathname}`)
+  // console.log(`Load Flash - ${location.pathname}`)
+  console.log('messages - ', messages)
 
   useEffect(function() {
     console.log(`useEffect Flash - ${location.pathname}`)
-    let msgCopy = messages.filter(m => m.display);
-    msgCopy.forEach(msg => msg.display=false);
-    setMessages(msgCopy);
-  }, [useLocation().pathname])
+    // let msgCopy = messages.filter(m => m.display);
+    // msgCopy.forEach(msg => msg.display=false);
+    // setMessages(msgCopy);
+    
+    // addMessages();
+
+    cycleMessages();
+  }, [location.pathname])
 
   return (
-    <>
+    <div className="container pt-1">
       {messages.map(msg => <Message 
-          text={msg.text} type={msg.type }
+          text={msg.text} type={msg.type} key={msg.id}
         />
       )}
-    </>
+    </div>
   )
 
 }

@@ -26,16 +26,7 @@ function Navbar() {
       <div className="navbar-collapse justify-content-end" id="navbarNav">
         <ul className="navbar-nav">
           <li className="nav-item">
-            <Link className="nav-link active" to="#">Home <span className="sr-only">(current)</span></Link>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="#">Features</a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link" href="#">Pricing</a>
-          </li>
-          <li className="nav-item">
-            <a className="nav-link disabled" href="#">Disabled</a>
+            <Link className="nav-link active" to="/">Home</Link>
           </li>
           {/* for logged in */}
           {user.username 

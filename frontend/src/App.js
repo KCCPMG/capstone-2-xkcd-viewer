@@ -11,31 +11,82 @@ import xkcdAPI from './helpers/api';
 
 
 function App() {
-  
-  const [user, setUser] = useState({});
-  const [messages, setMessages] = useState([
+
+  const sampleMessages = [
     {
       text: "sample success",
       type: "success", 
-      display: true
+      cyclesLeft: 1,
+      // displayNext: true,
+      id: 100
     },
     {
       text: "sample warning",
       type: "warning", 
-      display: true
+      cyclesLeft: 1,
+      // displayNext: true,
+      id: 101
     },
     {
       text: "sample danger",
       type: "danger", 
-      display: true
+      cyclesLeft: 1,
+      // displayNext: true,
+      id: 102
     }
-  ]);
+  ]
+  
+  const [user, setUser] = useState({});
+  const [messages, setMessages] = useState(sampleMessages);
+  const [nextMsgId, setNextMsgId] = useState(0);
 
 
   const login = (userObj) => {
     const {id, username, email} = userObj;
     setUser({loggedIn: true, id, username, email})
     // console.log(user);
+    addMessages([
+      {
+        text: `Welcome back, ${userObj.username}!`,
+        type: "success",
+        cyclesLeft: 1
+      }
+    ]);
+  }
+
+  const logout = () => {
+    xkcdAPI.removeToken();
+    
+    addMessages([
+      {
+        text: "Successfully signed out. See you next time!",
+        type: "success",
+        cyclesLeft: 1
+      }
+    ]);
+    setUser({loggedOut: false, id: null, username: null, email: null})
+  }
+
+  const addMessages = (newMessages=[]) => {
+    // const origMessages = messages
+    //   .filter(msg => msg.displayNext == true)
+    // origMessages.forEach(msg => msg.displayNext = false);
+    newMessages.forEach((msg, ind) => msg.id = nextMsgId+ind);
+    setNextMsgId(nextMsgId+newMessages.length);
+    const newMsgGroup = Object.assign([], messages, newMessages);
+    setMessages(newMsgGroup);
+
+  }
+
+
+  const cycleMessages = () => {
+    console.log({messages});
+    const msgCopy = messages.filter(msg => msg.cyclesLeft > 0);
+    console.log({msgCopy});
+    msgCopy.forEach(msg => msg.cyclesLeft--);
+    console.log({msgCopy});
+    setMessages(msgCopy);
+    console.log({messages});
   }
 
   // check on page load for user
@@ -50,8 +101,8 @@ function App() {
 
   return (
     <div className="App">
-      <UserContext.Provider value={{user, login}}>
-        <FlashContext.Provider value={{messages, setMessages}}>
+      <UserContext.Provider value={{user, login, logout}}>
+        <FlashContext.Provider value={{messages, addMessages, cycleMessages}}>
           <Router />
         </FlashContext.Provider>
       </UserContext.Provider>

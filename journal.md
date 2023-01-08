@@ -204,3 +204,8 @@ I need to create a way to implement flash messages, and my initial plan to do th
 ## January 7, 10:00 AM
 
 I created a basic way of handling flash messages with the location and effect hooks, but when I was using it in development mode, test messages would appear and then immediately disasppear as though the page had been navigated away from, even if there hadn't been any action taken on the page since the refresh. I made a build of the app and tried it again and it worked, so it seemed that the issue was due to double rendering in development mode. I looked it up and found out that the double rendering in development mode was due to rendering App inside of React.StrictMode in index.js, so I have commented out those wrapper elements for now but will have to put them back when I am done working on the flash element.
+
+
+## January 8, 12:05 PM
+
+I modified my flash and it appears to be working. Rather than using a `displayNext` boolean, I decided that it would be easier to manage (and to test) to instead have each flash message object have a `cyclesLeft` integer property which will decrement every time the `messages` piece of state cycles. I also decided to move more of the logic to App.js itself, so that each component will only need to worry about adding specific messages, and the Flash component itself will listen for navigation changes so that it can call the `cycleMessages` method from FlashContext. 

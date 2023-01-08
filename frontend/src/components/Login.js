@@ -1,4 +1,5 @@
 import UserContext from "../helpers/UserContext";
+import FlashContext from "../helpers/FlashContext";
 import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import xkcdAPI from "../helpers/api";
@@ -10,6 +11,7 @@ function Login() {
 
   const navigate = useNavigate();
   const { user, login } = useContext(UserContext);
+  const { addMessages } = useContext(FlashContext);
 
 
   const submitForm = (e) => {
@@ -17,9 +19,15 @@ function Login() {
     xkcdAPI.login(username, password).then(userObj => {
       login(userObj);
     })
-    .catch((err) => {
+    .catch((errors) => {
       console.log("Not so fast");
-      console.log(err);
+      console.log(errors);
+      addMessages(errors.map(err => {
+        return {
+          text: err,
+          type: "danger"
+        }
+      }));
     })
   }
 
