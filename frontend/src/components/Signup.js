@@ -21,13 +21,9 @@ function Signup() {
     e.preventDefault();
     if (password === confirmPassword) {
       xkcdAPI.signup(email, username, password)
-      .then((userObj => {
-        // console.log(user);
-        // console.log(userObj);
+      .then(userObj => {
         login(userObj);
-        // console.log(user);
-        // navigate('/');
-      }))
+      })
       .catch((errors) => {
         addMessages(errors.map(err => {
           return {
@@ -36,6 +32,14 @@ function Signup() {
           }
         }));
       })
+    } else {
+      addMessages([
+        {
+          text: "Please make sure your confirm password matches the password",
+          type: "danger",
+          cyclesLeft: 1
+        }
+      ])
     }
   }
 

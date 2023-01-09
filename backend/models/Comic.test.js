@@ -1,5 +1,5 @@
 const db = require("../db.js");
-const {getComic, addComic} = require("./Comic.js");
+const {getComic, getLastComic, getFirstComic, getRandomComic, addComic} = require("./Comic.js");
 process.env.NODE_ENV = "test";
 
 beforeAll(async() => await db.query(`DELETE FROM comics WHERE num=2709;`));
@@ -71,4 +71,28 @@ describe("Testing Comic.js", function() {
     await expect(addComic(newComic)).rejects.toThrow("Bad Request: Could not create comic, please check your input")
   })
 
+})
+
+
+describe("first, last, random comics", function() {
+
+  test("gets first comic", async function() {
+    const comic = await getFirstComic();
+    expect(comic.num).toBe(1);
+    expect(comic.prev).toBe(null);
+    expect(comic.subsequent).toBe(2);
+  })
+
+  test("gets last comic", async function() {
+    const comic = await getLastComic();
+    expect(comic.num).toBe(2707);
+    expect(comic.prev).toBe(2706);
+    expect(comic.subsequent).toBe(null);
+  })
+
+  test("gets random comic", async function() {
+    const comic = await getRandomComic();
+    expect(comic.prev).toBe(comic.num-1);
+    expect(comic.subsequent).toBe(comic.num+1);
+  })
 })

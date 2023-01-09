@@ -12,7 +12,14 @@ const { BadRequestError, NotFoundError } = require("../expressError.js");
 const getComic = async (num) => {
   try {
     // const result = await db.query(`SELECT * FROM comics WHERE num=$1`, [num]);
-    const result = await db.query(`SELECT * FROM (SELECT *, LAG(num) OVER (ORDER BY num ASC) AS prev, LEAD(num) OVER (ORDER BY num ASC) as subsequent FROM comics) AS foo WHERE num=$1`, [num]);
+    const result = await db.query(
+      `SELECT * FROM (
+        SELECT *, 
+        LAG(num) OVER (ORDER BY num ASC) AS prev, 
+        LEAD(num) OVER (ORDER BY num ASC) as subsequent 
+        FROM comics
+      ) AS chained_comic
+      WHERE num=$1`, [num]);
     if (result.rows.length === 1) return result.rows[0];
     else throw new NotFoundError("Could not find this comic, please check your input");
 
@@ -23,6 +30,66 @@ const getComic = async (num) => {
 
 }
 
+
+const getLastComic = async (num) => {
+  try {
+    const result = await db.query(
+      `SELECT * FROM (
+        SELECT *, 
+        LAG(num) OVER (ORDER BY num ASC) AS prev, 
+        LEAD(num) OVER (ORDER BY num ASC) as subsequent 
+        FROM comics
+      ) AS chained_comic
+      ORDER BY num DESC LIMIT 1`);
+    if (result.rows.length === 1) return result.rows[0];
+    else throw new NotFoundError("Could not find this comic, please check your input");
+
+  } catch(e) {
+    if (e instanceof NotFoundError) throw e;
+    else throw new BadRequestError(`Bad Request Error: ${e.message}`)
+  }
+
+}
+
+
+const getFirstComic = async () => {
+  try {
+    const result = await db.query(
+      `SELECT * FROM (
+        SELECT *, 
+        LAG(num) OVER (ORDER BY num ASC) AS prev, 
+        LEAD(num) OVER (ORDER BY num ASC) as subsequent 
+        FROM comics
+      ) AS chained_comic
+      ORDER BY num ASC LIMIT 1`);
+    if (result.rows.length === 1) return result.rows[0];
+    else throw new NotFoundError("Could not find this comic, please check your input");
+
+  } catch(e) {
+    if (e instanceof NotFoundError) throw e;
+    else throw new BadRequestError(`Bad Request Error: ${e.message}`)
+  }
+}
+
+
+const getRandomComic = async () => {
+  try {
+    const result = await db.query(`
+      SELECT * FROM  (
+        SELECT *, 
+        LAG(num) OVER (ORDER BY num ASC) AS prev, 
+        LEAD(num) OVER (ORDER BY num ASC) as subsequent 
+        FROM comics
+      ) AS chained_comic
+      ORDER BY RANDOM() LIMIT 1;
+    `)
+    if (result.rows.length === 1) return result.rows[0];
+    else throw new NotFoundError("Could not find this comic, please check your input");
+  } catch(e) {
+    if (e instanceof NotFoundError) throw e;
+    else throw new BadRequestError(`Bad Request Error: ${e.message}`)
+  }
+}
 
 /** Takes a comic object and inserts it into comics table 
  * 
@@ -48,4 +115,4 @@ const addComic = async (comic) => {
 
 
 
-module.exports = {getComic, addComic}
+module.exports = {getComic, getLastComic, getFirstComic, getRandomComic, addComic}
