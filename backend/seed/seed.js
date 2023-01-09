@@ -45,11 +45,16 @@ const seedTestDB = async () => {
 
     await db.query(`CREATE TABLE users (
       id TEXT UNIQUE PRIMARY KEY, 
-      email TEXT UNIQUE
-        CHECK (position('@' IN email) > 1), 
+      email TEXT UNIQUE,
       username TEXT UNIQUE, 
       hashed_password TEXT, 
-      created_at TIMESTAMPTZ);`);
+      created_at TIMESTAMPTZ,
+      
+      CONSTRAINT email_address CHECK (POSITION('@' IN email) > 1), 
+      CONSTRAINT email_length CHECK (LENGTH(email)>5),
+      CONSTRAINT username_chars CHECK (username ~ '^[a-zA-Z0-9]*$'),
+      CONSTRAINT username_length CHECK (LENGTH(username)>5)
+    );`);
 
     await Promise.all([
       db.query(`CREATE TABLE upvotes (

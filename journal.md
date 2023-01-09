@@ -209,3 +209,11 @@ I created a basic way of handling flash messages with the location and effect ho
 ## January 8, 12:05 PM
 
 I modified my flash and it appears to be working. Rather than using a `displayNext` boolean, I decided that it would be easier to manage (and to test) to instead have each flash message object have a `cyclesLeft` integer property which will decrement every time the `messages` piece of state cycles. I also decided to move more of the logic to App.js itself, so that each component will only need to worry about adding specific messages, and the Flash component itself will listen for navigation changes so that it can call the `cycleMessages` method from FlashContext. 
+
+
+## January 8, 5:05 PM
+
+While testing flash messages on signup, I realized that I could generate a character with a username of simply '', so I decided to add some constraints to my users table. I have since added them, as well as as some more verbose error messages in the User model, and finally the additional tests to make sure that these work.
+
+
+## January 8, 3:35 PM

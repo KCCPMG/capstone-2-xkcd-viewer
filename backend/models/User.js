@@ -10,6 +10,9 @@ const DUPLICATE_EMAIL="Could not register user, an account already exists with t
 const DUPLICATE_USERNAME="Could not register user, an account already exists with this username";
 const INVALID_EMAIL="Could not register user, invalid email address";
 const INCOMPLETE_USER="Could not register user, please complete all fields";
+const SHORT_EMAIL="Could not register user, email address must be at least 6 characters";
+const INVALID_USERNAME="Could not register user, username can only contain letters and numbers";
+const SHORT_USERNAME="Could not register user, username must be at least 6 characters";
 
 
 /** Get a saved user
@@ -60,10 +63,16 @@ const signup = async(userObj) => {
       throw new BadRequestError(DUPLICATE_EMAIL);
     } else if (e.message==="duplicate key value violates unique constraint \"users_username_key\"") {
       throw new BadRequestError(DUPLICATE_USERNAME);
-    } else if (e.message==="new row for relation \"users\" violates check constraint \"users_email_check\"") {
+    } else if (e.message==="new row for relation \"users\" violates check constraint \"email_address\"") {
       throw new BadRequestError(INVALID_EMAIL);
+    } else if (e.message==="new row for relation \"users\" violates check constraint \"email_length\"") {
+      throw new BadRequestError(SHORT_EMAIL);
+    } else if (e.message==="new row for relation \"users\" violates check constraint \"username_chars\"") {
+      throw new BadRequestError(INVALID_USERNAME);
+    } else if (e.message==="new row for relation \"users\" violates check constraint \"username_length\"") {
+      throw new BadRequestError(SHORT_USERNAME);
     } else if (e.message==="data and salt arguments required") {
-      throw new BadRequestError(INCOMPLETE_USER)
+      throw new BadRequestError(INCOMPLETE_USER)    
     } else throw new BadRequestError("Bad Request, please check input, make sure to avoid duplication");
   }
 

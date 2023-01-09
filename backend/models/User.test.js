@@ -68,6 +68,37 @@ describe("Testing signup", function(){
     await expect(signup(badUser)).rejects.toThrow("Could not register user, invalid email address")
   })
 
+
+  test("signup with too short email address throws BadRequestError", async function() {
+    const badUser = {
+      email: "i@u.c",
+      username: "invaliduser",
+      password: "password"
+    }
+    await expect(signup(badUser)).rejects.toThrow("Could not register user, email address must be at least 6 characters")
+  })
+
+
+  test("signup with invalid username characters throws BadRequestError", async function() {
+    const badUser = {
+      email: "invalid@user.com",
+      username: "invalid user",
+      password: "password"
+    }
+    await expect(signup(badUser)).rejects.toThrow("Could not register user, username can only contain letters and numbers")
+  })
+  
+
+  test("signup with too short username throws BadRequestError", async function() {
+    const badUser = {
+      email: "invalid@user.com",
+      username: "ivu",
+      password: "password"
+    }
+    await expect(signup(badUser)).rejects.toThrow("Could not register user, username must be at least 6 characters");
+  })
+  
+
 })
 
 
@@ -107,7 +138,7 @@ describe("Testing authenticate", function(){
 
   test("should throw an Unauthorized error with incorrect username/password", async function(){
     const newSavedUser = await signup(newUser);
-    await expect(authenticate("wrongpassword", newUser.password)).rejects.toThrow("Bad Login");
+    await expect(authenticate("wrongpassword", newUser.password)).rejects.toThrow("Invalid credentials, please try again");
   })
 
 })

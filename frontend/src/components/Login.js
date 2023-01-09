@@ -20,8 +20,6 @@ function Login() {
       login(userObj);
     })
     .catch((errors) => {
-      console.log("Not so fast");
-      console.log(errors);
       addMessages(errors.map(err => {
         return {
           text: err,
