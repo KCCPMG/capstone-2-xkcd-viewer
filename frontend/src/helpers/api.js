@@ -74,7 +74,47 @@ class xkcdAPI {
 
   }
 
+  /** Get comic by number */
+  static async getComic(comic_num) {
+    const data = await this.request(`comics/${comic_num}`);
+    return data;
+  }
 
+  /** Get random comic */
+  static async getRandomComic() {
+    const data = await this.request('comics/random');
+    return data;
+  }
+
+  /** Get last comic (number unknown) */
+  static async getLastComic() {
+    const data = await this.request('comics/current');
+    return data;
+  }
+
+  /** Add an upvote to a comic */
+  static async addUpvote(comic_num) {
+    const data = await this.request(`comics/upvote/${comic_num}`, {}, 'POST');
+    return data;
+  }
+
+  /** Remove an upvote from a comic */
+  static async removeUpvote(comic_num) {
+    const data = await this.request(`comics/upvote/${comic_num}`, {}, 'DELETE');
+    return data;
+  }
+
+  /** Favorite a comic */
+  static async addFavorite(comic_num) {
+    const data = await this.request(`comics/favorite/${comic_num}`, {}, 'POST');
+    return data;
+  }
+
+  /** Unfavorite a comic */
+  static async removeFavorite(comic_num) {
+    const data = await this.request(`comics/favorite/${comic_num}`, {}, 'DELETE');
+    return data;
+  }
 
 }
 

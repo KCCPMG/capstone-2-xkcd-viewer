@@ -216,4 +216,10 @@ I modified my flash and it appears to be working. Rather than using a `displayNe
 While testing flash messages on signup, I realized that I could generate a character with a username of simply '', so I decided to add some constraints to my users table. I have since added them, as well as as some more verbose error messages in the User model, and finally the additional tests to make sure that these work.
 
 
-## January 8, 3:35 PM
+## January 11, 1:00 PM
+
+I've added functionality from end to end to get the first comic, a random comic, and the last comic. I had hoped to do some of these with their own single SQL query, but as of now that's too complicted and it may be something worth playing around with later, espeically since this shouldn't be too much of a performance cost given that the database exists on the server and will not require any additional network transactions.
+
+On the frontend, loading a random comic from a random page proved difficult, since react-router didn't consider this a change in props/state to trigger a reload. To get around this I had to modify the random button in my Comic component, so that if it was already loading from the "/random" path it would call the correct API route directly from the component without going back up to the router. 
+
+At this point, all of the navigation, favoriting, upvoting, logging in, and signing up all seem to be working. I need to add documentation and do some cleanup, but otherwise my last point of emphasis will be to add the features for getting one's own favorited comics, and other comics ranked by upvotes. 

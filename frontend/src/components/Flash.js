@@ -15,9 +15,9 @@ function Flash() {
 
   const location = useLocation();
   const {messages, cycleMessages} = useContext(FlashContext);
-  console.log(location);
+  // console.log(location);
   // console.log(`Load Flash - ${location.pathname}`)
-  console.log('messages - ', messages)
+  // console.log('messages - ', messages)
 
   useEffect(function() {
     console.log(`useEffect Flash - ${location.pathname}`)

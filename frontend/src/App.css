@@ -1,5 +1,40 @@
 .App {
   text-align: center;
+  font-family: Lucida,Helvetica,sans-serif;
+  font-variant: small-caps;
+  font-weight: 700;
+}
+
+.response-control-icon {
+  height: 30px;
+  width: 30px;
+  color: black;
+  /* fill: gold; */
+}
+
+.response-control-button {
+  width: fit-content;
+}
+
+.upvoted {
+  background-color: lightgreen;
+}
+
+.upvoted > svg {
+  fill: white;
+}
+
+.favorited {
+  background-color: gold;
+}
+
+.favorited > svg {
+  fill: white;
+}
+
+.response-count {
+  font-size: 18px;
+  font-family: "Comic Sans MS";
 }
 
 .App-logo {

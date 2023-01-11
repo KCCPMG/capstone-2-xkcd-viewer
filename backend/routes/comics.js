@@ -10,6 +10,25 @@ router.get('/', (req, res) => {
   res.json(`comics!\nYour user_id is ${req.user_id}`)
 })
 
+router.get('/random', async (req, res, next) => {
+  try {
+    const comic = await Controls.getRandomComicDetails(req.user_id);
+    return res.json(comic);
+  } catch(e) {
+    return next(e);
+  }
+})
+
+
+router.get('/current', async (req, res, next) => {
+  try {
+    const comic = await Controls.getLastComicDetails(req.user_id);
+    return res.json(comic);
+  } catch(e) {
+    return next(e);
+  }
+})
+
 /** GET comics/:num
  * 
  * Takes a given number and returns the full comic data,
@@ -28,6 +47,8 @@ router.get('/:num', async (req, res, next) => {
     return next(e);
   }
 })
+
+
 
 
 router.post('/upvote/:num', async (req, res, next) => {

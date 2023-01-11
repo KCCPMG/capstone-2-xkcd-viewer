@@ -12,32 +12,32 @@ import xkcdAPI from './helpers/api';
 
 function App() {
 
-  const sampleMessages = [
-    {
-      text: "sample success",
-      type: "success", 
-      cyclesLeft: 1,
-      // displayNext: true,
-      id: 100
-    },
-    {
-      text: "sample warning",
-      type: "warning", 
-      cyclesLeft: 1,
-      // displayNext: true,
-      id: 101
-    },
-    {
-      text: "sample danger",
-      type: "danger", 
-      cyclesLeft: 1,
-      // displayNext: true,
-      id: 102
-    }
-  ]
+  // const sampleMessages = [
+  //   {
+  //     text: "sample success",
+  //     type: "success", 
+  //     cyclesLeft: 1,
+  //     // displayNext: true,
+  //     id: 100
+  //   },
+  //   {
+  //     text: "sample warning",
+  //     type: "warning", 
+  //     cyclesLeft: 1,
+  //     // displayNext: true,
+  //     id: 101
+  //   },
+  //   {
+  //     text: "sample danger",
+  //     type: "danger", 
+  //     cyclesLeft: 1,
+  //     // displayNext: true,
+  //     id: 102
+  //   }
+  // ]
   
   const [user, setUser] = useState({});
-  const [messages, setMessages] = useState(sampleMessages);
+  const [messages, setMessages] = useState([]);
   const [nextMsgId, setNextMsgId] = useState(0);
 
 
@@ -80,13 +80,13 @@ function App() {
 
 
   const cycleMessages = () => {
-    console.log({messages});
+    // console.log({messages});
     const msgCopy = messages.filter(msg => msg.cyclesLeft > 0);
-    console.log({msgCopy});
+    // console.log({msgCopy});
     msgCopy.forEach(msg => msg.cyclesLeft--);
-    console.log({msgCopy});
+    // console.log({msgCopy});
     setMessages(msgCopy);
-    console.log({messages});
+    // console.log({messages});
   }
 
   // check on page load for user
