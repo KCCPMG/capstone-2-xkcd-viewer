@@ -3,7 +3,7 @@ const { SECRET_KEY } = require('../config');
 const authenticateJWT = require('./auth');
 process.env.NODE_ENV = "test"
 
-const testUser = {}
+
 const fakeId = "testy-test-testid";
 const testJWT = jwt.sign({id: fakeId}, SECRET_KEY);
 const badJWT = "bad-token";

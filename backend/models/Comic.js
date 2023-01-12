@@ -4,14 +4,14 @@ const { BadRequestError, NotFoundError } = require("../expressError.js");
 
 /** Return a comic
  * 
- * Given an integer (num), return the appropriate
- * comic from the database that has that num
+ * Given an integer (num), returns the appropriate
+ * comic from the database that has that num,
+ * including the id of the prior and next comics
  * If a comic is not found, throw a NotFoundError
  * Any other error will throw a BadRequestError
  */
 const getComic = async (num) => {
   try {
-    // const result = await db.query(`SELECT * FROM comics WHERE num=$1`, [num]);
     const result = await db.query(
       `SELECT * FROM (
         SELECT *, 
@@ -23,14 +23,18 @@ const getComic = async (num) => {
     if (result.rows.length === 1) return result.rows[0];
     else throw new NotFoundError("Could not find this comic, please check your input");
 
-  } catch(e) {
-    if (e instanceof NotFoundError) throw e;
-    else throw new BadRequestError(`Bad Request Error: ${e.message}`)
+  } catch(err) {
+    if (err instanceof NotFoundError) throw err;
+    else throw new BadRequestError(`Bad Request Error: ${err.message}`)
   }
-
 }
 
 
+/** Returns latest comic
+ * 
+ * Finds and returns the most recent comic, 
+ * including the id of the prior comic
+ */
 const getLastComic = async (num) => {
   try {
     const result = await db.query(
@@ -44,14 +48,17 @@ const getLastComic = async (num) => {
     if (result.rows.length === 1) return result.rows[0];
     else throw new NotFoundError("Could not find this comic, please check your input");
 
-  } catch(e) {
-    if (e instanceof NotFoundError) throw e;
-    else throw new BadRequestError(`Bad Request Error: ${e.message}`)
+  } catch(err) {
+    if (err instanceof NotFoundError) throw err;
+    else throw new BadRequestError(`Bad Request Error: ${err.message}`)
   }
-
 }
 
-
+/** Returns first comic
+ * 
+ * Finds the earliest comic, including the 
+ * id of the next comic
+ */
 const getFirstComic = async () => {
   try {
     const result = await db.query(
@@ -65,13 +72,17 @@ const getFirstComic = async () => {
     if (result.rows.length === 1) return result.rows[0];
     else throw new NotFoundError("Could not find this comic, please check your input");
 
-  } catch(e) {
-    if (e instanceof NotFoundError) throw e;
-    else throw new BadRequestError(`Bad Request Error: ${e.message}`)
+  } catch(err) {
+    if (err instanceof NotFoundError) throw err;
+    else throw new BadRequestError(`Bad Request Error: ${err.message}`)
   }
 }
 
-
+/** Return random comic
+ * 
+ * Finds and returns a random comic, including the 
+ * ids of the prior and next comics
+ */
 const getRandomComic = async () => {
   try {
     const result = await db.query(`
@@ -85,15 +96,13 @@ const getRandomComic = async () => {
     `)
     if (result.rows.length === 1) return result.rows[0];
     else throw new NotFoundError("Could not find this comic, please check your input");
-  } catch(e) {
-    if (e instanceof NotFoundError) throw e;
-    else throw new BadRequestError(`Bad Request Error: ${e.message}`)
+  } catch(err) {
+    if (err instanceof NotFoundError) throw err;
+    else throw new BadRequestError(`Bad Request Error: ${err.message}`)
   }
 }
 
-/** Takes a comic object and inserts it into comics table 
- * 
- */
+/** Takes a comic object and inserts it into comics table */
 const addComic = async (comic) => {
   try {
     const {num, month, link, year, news, safe_title, transcript, alt, img, title, day} = comic;

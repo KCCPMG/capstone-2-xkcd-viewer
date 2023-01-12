@@ -116,6 +116,18 @@ class xkcdAPI {
     return data;
   }
 
+  /** Get user favorites */
+  static async getFavorites() {
+    const data = await this.request('comics/favorites');
+    return data;
+  }
+
+  /** Get all upvoted comics ranked by upvotes */
+  static async getPopular() {
+    const data = await this.request('comics/popular');
+    return data;
+  }
+
 }
 
 

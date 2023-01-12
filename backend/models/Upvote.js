@@ -1,5 +1,5 @@
 const db = require('../db.js');
-const { BadRequestError, NotFoundError } = require("../expressError.js");
+const { BadRequestError, NotFoundError, UnauthorizedError } = require("../expressError.js");
 
 /** Add an upvote from a userid and a comicNum, returns
  * the upvote
@@ -7,12 +7,14 @@ const { BadRequestError, NotFoundError } = require("../expressError.js");
  * Need to make sure that that user and comic exist,
  * and that no upvote for these already exists
  * 
+ * If no userId, throws an UnauthorizedError
  * If user or comic not found, throws a NotFoundError
  * If upvote already exists, throws a BadRequestError
  * Any other uncaught error throws a BadRequestError
  */
 const addUpvote = async (userId, comicNum) => {
   try {
+    if (!userId) throw new UnauthorizedError();
     const checkUser = db.query(`SELECT * FROM users WHERE id=$1`, [userId]);
     const checkComic = db.query(`SELECT * FROM comics WHERE num=$1`, [comicNum]);
     const checkUpvote = db.query(`SELECT * FROM upvotes WHERE user_id=$1 AND comic_num=$2`, [userId, comicNum]);
@@ -28,9 +30,10 @@ const addUpvote = async (userId, comicNum) => {
     [userId, comicNum]);
     return upvoteQuery.rows[0];
     
-  } catch(e) {
-    if (e instanceof NotFoundError || e instanceof BadRequestError) throw e;
-    else throw new BadRequestError(e.message);
+  } catch(err) {
+    if (err instanceof UnauthorizedError) throw err;
+    else if (err instanceof NotFoundError || err instanceof BadRequestError) throw err;
+    else throw new BadRequestError(err.message);
   }
 
 }
@@ -41,19 +44,23 @@ const addUpvote = async (userId, comicNum) => {
  * 
  * Need to make sure that the upvote exists
  * 
- * If the upvote does not exist, throw NotFoundError
+ * If no userId, throws an UnauthorizedError
+ * If the upvote does not exist, throw NotFoundError,
+ * if no user throw UnauthorizedError
  * Any other error throws a BadRequestError
  */
 const removeUpvote = async (userId, comicNum) => {
   try {
+    if (!userId) throw new UnauthorizedError();
     const deleteQuery = await db.query(`DELETE FROM upvotes 
       WHERE user_id=$1 AND comic_num=$2
       RETURNING *`, 
     [userId, comicNum]);
     if (deleteQuery.rows.length===0) throw new NotFoundError("No rows deleted")
     else return deleteQuery.rows[0];
-  } catch(e) {
-    if (e instanceof NotFoundError) throw e;
+  } catch(err) {
+    if (err instanceof UnauthorizedError) throw err;
+    else if (err instanceof NotFoundError) throw err;
     throw new BadRequestError();
   }
 }
@@ -82,22 +89,37 @@ const getUpvotesByComic = async (comicNum, userId) => {
 
     return retObj;
 
-  } catch(e) {
-    throw e;
+  } catch(err) {
+    throw(err);
   }
 }
 
 
-/** Given a userId, returns all comicIds liked by the user */
+/** Given a userId, returns all comic_nums liked by the user */
 const getUpvotesByUser = async (userId) => {
   try {
+    if (!userId) throw new UnauthorizedError();
     const upvoteQuery = await db.query(`SELECT comic_num FROM upvotes WHERE user_id=$1`, [userId]);
     return upvoteQuery.rows.map(row => row.comic_num); // array of integers instead of objects
-  } catch(e) {
-    throw(e);
+  } catch(err) {
+    throw(err);
+  }
+}
+
+/** Return list of most popular comics
+ *  
+ * Regardless of user, look up most popular comics, 
+ * return only comic_nums  
+ */
+const getMostUpvoted = async () => {
+  try {
+    const upvoteQuery = await db.query(`SELECT comic_num, COUNT(comic_num) AS votes FROM upvotes GROUP BY comic_num ORDER BY votes DESC;`);
+    return upvoteQuery.rows.map(row => row.comic_num);
+  } catch(err) {
+    throw(err);
   }
 }
 
 
 
-module.exports = { addUpvote, removeUpvote, getUpvotesByUser, getUpvotesByComic }
+module.exports = { addUpvote, removeUpvote, getUpvotesByUser, getUpvotesByComic, getMostUpvoted }

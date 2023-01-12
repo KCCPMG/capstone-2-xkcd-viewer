@@ -1,8 +1,6 @@
-
 require("dotenv").config({
   path: './.env'
 });
-// require("dotenv").config();
 require("colors");
 
 const SECRET_KEY = process.env.SECRET_KEY || "default-secret";
@@ -10,7 +8,6 @@ const PORT = process.env.PORT || 3001;
 const BCRYPT_WORK_FACTOR = process.env.NODE_ENV === "test" ? 1 : 12;
 
 function getDatabaseUri() {
-  // console.log(`From config: ${process.env.NODE_ENV}`)
   if (process.env.NODE_ENV === "test"){
     return "xkcd_test"
   } else {

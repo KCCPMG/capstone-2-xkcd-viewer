@@ -12,34 +12,27 @@ function Navbar() {
       <Link className="navbar-brand mx-3" to="/">
         <h3>xkcd Viewer</h3>
       </Link>
-      {/* <div className="navbar-collapse">
-        <ul className="nav mr-auto mt-2 mt-lg-0">
-          <li>Log In</li>
-        </ul>
-      </div> */}
-      {/* <nav className="nav mr-auto mt-2 mt-lg-0">
-        <ul>
-          <li>1</li>
-          <li>2</li>
-        </ul>
-      </nav> */}
       <div className="navbar-collapse justify-content-end" id="navbarNav">
         <ul className="navbar-nav">
           <li className="nav-item">
             <Link className="nav-link active" to="/">Home</Link>
+          </li>
+          <li>
+            <Link className="nav-link" to="/popular">
+              Popular
+            </Link>
           </li>
           {/* for logged in */}
           {user.username 
             ? 
             <>
               <li className="nav-item">
-                <Link className="nav-link" to="/favorites">Favorites</Link>
+                <Link className="nav-link" to="/favorites">
+                  My Favorites
+                </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/">{user.username}</Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/logout">Logout</Link>
+                <Link className="nav-link" to="/logout">Logout {user.username}</Link>
               </li>
             </>
             :

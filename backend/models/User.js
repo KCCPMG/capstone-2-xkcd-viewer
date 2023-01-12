@@ -29,8 +29,8 @@ const getUser = async(id) => {
     } else {
       return getQuery.rows[0];
     }
-  } catch(e) {
-    if (e instanceof NotFoundError) throw e;
+  } catch(err) {
+    if (err instanceof NotFoundError) throw err;
     else throw new BadRequestError();
   }
 }
@@ -57,21 +57,21 @@ const signup = async(userObj) => {
 
     return signupQuery.rows[0];
 
-  } catch(e) {
-    console.log(e.message, userObj);
-    if (e.message==="duplicate key value violates unique constraint \"users_email_key\"") {
+  } catch(err) {
+    console.log(err.message, userObj);
+    if (err.message==="duplicate key value violates unique constraint \"users_email_key\"") {
       throw new BadRequestError(DUPLICATE_EMAIL);
-    } else if (e.message==="duplicate key value violates unique constraint \"users_username_key\"") {
+    } else if (err.message==="duplicate key value violates unique constraint \"users_username_key\"") {
       throw new BadRequestError(DUPLICATE_USERNAME);
-    } else if (e.message==="new row for relation \"users\" violates check constraint \"email_address\"") {
+    } else if (err.message==="new row for relation \"users\" violates check constraint \"email_address\"") {
       throw new BadRequestError(INVALID_EMAIL);
-    } else if (e.message==="new row for relation \"users\" violates check constraint \"email_length\"") {
+    } else if (err.message==="new row for relation \"users\" violates check constraint \"email_length\"") {
       throw new BadRequestError(SHORT_EMAIL);
-    } else if (e.message==="new row for relation \"users\" violates check constraint \"username_chars\"") {
+    } else if (err.message==="new row for relation \"users\" violates check constraint \"username_chars\"") {
       throw new BadRequestError(INVALID_USERNAME);
-    } else if (e.message==="new row for relation \"users\" violates check constraint \"username_length\"") {
+    } else if (err.message==="new row for relation \"users\" violates check constraint \"username_length\"") {
       throw new BadRequestError(SHORT_USERNAME);
-    } else if (e.message==="data and salt arguments required") {
+    } else if (err.message==="data and salt arguments required") {
       throw new BadRequestError(INCOMPLETE_USER)    
     } else throw new BadRequestError("Bad Request, please check input, make sure to avoid duplication");
   }
@@ -85,14 +85,11 @@ const signup = async(userObj) => {
 const authenticate = async(username, password) => {
   try {
     const userQuery = await db.query(`SELECT * FROM users WHERE username=$1`, [username]);
-    // console.log(userQuery);
     const foundUser = userQuery.rows[0]
-    // console.log(foundUser);
     const check = await bcrypt.compare(password, foundUser.hashed_password);
     if (check) return foundUser;
     else throw new UnauthorizedError();
-  } catch(e) {
-    // console.log(e);
+  } catch(err) {
     throw new UnauthorizedError();
   }
 

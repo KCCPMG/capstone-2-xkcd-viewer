@@ -1,5 +1,3 @@
-process.env.NODE_ENV="test";
-
 const express = require('express');
 const cors = require('cors');
 const { NotFoundError } = require('./expressError');
@@ -21,10 +19,6 @@ app.use(authenticateJWT);
 app.use('/comics', comicsRouter);
 app.use('/auth', authRouter);
 
-// placeholder
-app.get("/", (req, res) => {
-  res.json("Hello World");
-})
 
 /** 404 Handler */
 app.use((req, res, next) => {

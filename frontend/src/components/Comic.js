@@ -66,7 +66,7 @@ function Comic({comicNum, navControls, random, current}) {
 
 
   const addUpvote = () => {
-    xkcdAPI.addUpvote(comicNum)
+    xkcdAPI.addUpvote(comic.num)
     .then((comicObj) => {
       setComic(comicObj);
       console.log(comicObj);
@@ -83,7 +83,7 @@ function Comic({comicNum, navControls, random, current}) {
   }
 
   const removeUpvote = () => {
-    xkcdAPI.removeUpvote(comicNum)
+    xkcdAPI.removeUpvote(comic.num)
     .then((comicObj) => {
       setComic(comicObj);
       console.log(comicObj);
@@ -100,7 +100,7 @@ function Comic({comicNum, navControls, random, current}) {
   }
 
   const addFavorite = () => {
-    xkcdAPI.addFavorite(comicNum)
+    xkcdAPI.addFavorite(comic.num)
     .then((comicObj) => {
       setComic(comicObj);
       console.log(comicObj);
@@ -117,7 +117,7 @@ function Comic({comicNum, navControls, random, current}) {
   }
 
   const removeFavorite = () => {
-    xkcdAPI.removeFavorite(comicNum)
+    xkcdAPI.removeFavorite(comic.num)
     .then((comicObj) => {
       setComic(comicObj);
       console.log(comicObj);
@@ -178,8 +178,8 @@ function Comic({comicNum, navControls, random, current}) {
   }, [comicNum, random, current])
 
   return (
-    <div className="comic">
-      <h3>#{comic.num}: {comic.title}</h3>
+    <div className="comic mt-5">
+      <h3 style={{fontWeight: 700}}>#{comic.num}: {comic.title}</h3>
       <div className="image-container">
         <img src={comic.img} />
       </div>

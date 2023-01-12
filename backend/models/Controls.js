@@ -39,11 +39,11 @@ const getComicDetails = async (comicNum, userId) => {
     return returnObj;
 
   } catch(err) {
-    console.log(err);
     throw(err);
   }
 }
 
+/** Get all details for earliest comic */
 const getFirstComicDetails = async (userId) => {
   try {
     const foundComic = await Comic.getFirstComic();
@@ -64,12 +64,11 @@ const getFirstComicDetails = async (userId) => {
     return returnObj;
 
   } catch(err) {
-    console.log(err);
     throw(err);
   }
 }
 
-
+/** Get all details for latest comic */
 const getLastComicDetails = async (userId) => {
   try {
     const foundComic = await Comic.getLastComic();
@@ -90,13 +89,11 @@ const getLastComicDetails = async (userId) => {
     return returnObj;
 
   } catch(err) {
-    console.log(err);
     throw(err);
   }
 }
 
-
-
+/** Get all details for random comic */
 const getRandomComicDetails = async (userId) => {
   try {
     const foundComic = await Comic.getRandomComic();
@@ -117,7 +114,6 @@ const getRandomComicDetails = async (userId) => {
     return returnObj;
 
   } catch(err) {
-    console.log(err);
     throw(err);
   }
 }

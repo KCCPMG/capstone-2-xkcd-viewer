@@ -1,19 +1,17 @@
-import React, {useState, useEffect, useContext} from "react";
-import xkcdAPI from "../helpers/api";
-import FlashContext from "../helpers/FlashContext";
-import Comic from "./Comic";
+import React, {useEffect, useContext, useState} from 'react';
+import xkcdAPI from '../helpers/api';
+import FlashContext from '../helpers/FlashContext';
+import Comic from './Comic';
 
+function Popular() {
 
-function Favorites() {
-
-  // an array of comic_nums
-  const [favorites, setFavorites] = useState([]);
+  const [upvoted, setUpvoted] = useState([]);
   const { addMessages } = useContext(FlashContext);
 
   useEffect(function() {
-    xkcdAPI.getFavorites()
+    xkcdAPI.getPopular()
     .then((comics) => {
-      setFavorites(comics);
+      setUpvoted(comics);
     })
     .catch((errors) => {
       addMessages(errors.map(err => {
@@ -28,11 +26,11 @@ function Favorites() {
 
   return (
     <>
-      {favorites.map(fav => 
+      {upvoted.map(fav => 
         <Comic comicNum={fav} navControls={false} />
       )}
     </>
   )
 }
 
-export default Favorites;
+export default Popular;

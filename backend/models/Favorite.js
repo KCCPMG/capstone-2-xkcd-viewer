@@ -1,5 +1,5 @@
 const db = require('../db.js');
-const { BadRequestError, NotFoundError } = require("../expressError.js");
+const { BadRequestError, NotFoundError, UnauthorizedError } = require("../expressError.js");
 
 
 /** Add a favorite from a userid and a comicNum, returns
@@ -9,12 +9,14 @@ const { BadRequestError, NotFoundError } = require("../expressError.js");
  * and that this user does not already have this comic 
  * favorited
  * 
+ * If no user, throws an UnauthorizedError
  * If user or comic not found, throws a NotFoundError
  * If favorite already exists, throws a BadRequestError
  * Any other uncaught error throws a BadRequestError
  */
 const addFavorite = async (userId, comicNum) => {
   try {
+    if (!userId) throw new UnauthorizedError();
     const checkUser = db.query(`SELECT * FROM users WHERE id=$1`, [userId]);
     const checkComic = db.query(`SELECT * FROM comics WHERE num=$1`, [comicNum]);
     const checkFavorite = db.query(`SELECT * FROM favorites WHERE user_id=$1 AND comic_num=$2`, [userId, comicNum]);
@@ -30,8 +32,9 @@ const addFavorite = async (userId, comicNum) => {
     [userId, comicNum]);
     return favoriteQuery.rows[0];
 
-  } catch(e) {
-    if (e instanceof NotFoundError || e instanceof BadRequestError) throw e;
+  } catch(err) {
+    if (err instanceof UnauthorizedError) throw err;
+    else if (err instanceof NotFoundError || err instanceof BadRequestError) throw err;
     else throw new BadRequestError();
   }
 }
@@ -43,30 +46,37 @@ const addFavorite = async (userId, comicNum) => {
  * 
  * Need to make sure that the favorite exists
  * 
+ * If no user, throws an UnauthorizedError
  * If the favorite does not exist, throw NotFoundError
  * Any other error throws a BadRequestError
  */
 const removeFavorite = async (userId, comicNum) => {
   try {
+    if (!userId) throw new UnauthorizedError();
     const deleteQuery = await db.query(`DELETE FROM favorites 
       WHERE user_id=$1 AND comic_num=$2
       RETURNING *`, 
     [userId, comicNum]);
     if (deleteQuery.rows.length===0) throw new NotFoundError("No rows deleted")
     else return deleteQuery.rows[0];
-  } catch(e) {
-    if (e instanceof NotFoundError) throw e;
+  } catch(err) {
+    if (err instanceof UnauthorizedError) throw err;
+    else if (err instanceof NotFoundError) throw err;
     throw new BadRequestError();
   }
 }
 
-/** Given a userId, returns all comicIds favorited by the user */
+/** Given a userId, returns all comicIds favorited by the user
+ * If no user, throws an UnauthorizedError
+ */
 getFavoritesByUser = async (userId) => {
   try {
+    if (!userId) throw new UnauthorizedError();
     const favoritesQuery = await db.query(`SELECT comic_num FROM favorites WHERE user_id=$1`, [userId]);
     return favoritesQuery.rows.map(row => row.comic_num) // array of integers instead of objects
-  } catch(e) {
-    throw(e);
+  } catch(err) {
+    if (err instanceof UnauthorizedError) throw err;
+    else throw new BadRequestError();
   } 
 }
 
@@ -93,8 +103,8 @@ getFavoritesByComic = async (comicNum, userId) => {
 
     return retObj;
 
-  } catch(e) {
-    throw e;
+  } catch(err) {
+    throw new BadRequestError();
   }
 }
 
