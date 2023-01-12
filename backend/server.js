@@ -8,6 +8,6 @@ console.log(process.env.NODE_ENV)
 const app = require('./app');
 const { PORT } = require("./config");
 
-app.listen(PORT, function() {
+app.listen(process.env.PORT || PORT, function() {
   console.log(`Listening on port ${PORT}`)
 })
