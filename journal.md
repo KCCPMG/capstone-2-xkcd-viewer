@@ -223,3 +223,8 @@ I've added functionality from end to end to get the first comic, a random comic,
 On the frontend, loading a random comic from a random page proved difficult, since react-router didn't consider this a change in props/state to trigger a reload. To get around this I had to modify the random button in my Comic component, so that if it was already loading from the "/random" path it would call the correct API route directly from the component without going back up to the router. 
 
 At this point, all of the navigation, favoriting, upvoting, logging in, and signing up all seem to be working. I need to add documentation and do some cleanup, but otherwise my last point of emphasis will be to add the features for getting one's own favorited comics, and other comics ranked by upvotes. 
+
+
+## January 12, 9:50 AM
+
+I realized that if I refreshed a page like favorites that immediately sent a request with a token, as I had it before the token would be lost. So if I refreshed the favorites page, I would get an unauthorized error. Similarly, if I liked a comic on that comic's page and then refreshed, the like would show up but not as having been liked by me. I added my `loadToken()` call to the top of my base request method, and this issue appears to be corrected.

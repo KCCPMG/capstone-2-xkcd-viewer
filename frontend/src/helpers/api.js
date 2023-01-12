@@ -29,6 +29,7 @@ class xkcdAPI {
 
 
   static async request(endpoint, data, method) {
+    this.loadToken();
     const url = `${SERVER_URL}/${endpoint}`;
     // assign token to all requests
     const headers = {token: this.#token};
