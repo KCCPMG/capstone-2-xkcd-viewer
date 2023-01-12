@@ -10,6 +10,7 @@ import Signup from './Signup';
 import Favorites from './Favorites';
 import Popular from './Popular';
 import Flash from './Flash';
+import NotFound from './NotFound';
 
 
 function Router() {
@@ -27,6 +28,7 @@ function Router() {
         <Route path="/comics/:comicNum" element={<ComicView />} />
         <Route path="/random" element={<Comic navControls={true} random={true} />} />
         <Route path="/current" element={<Comic navControls={true} current={true} />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   )

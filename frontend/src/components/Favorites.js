@@ -29,7 +29,7 @@ function Favorites() {
   return (
     <>
       {favorites.map(fav => 
-        <Comic comicNum={fav} navControls={false} />
+        <Comic comicNum={fav} navControls={false} key={fav} />
       )}
     </>
   )
