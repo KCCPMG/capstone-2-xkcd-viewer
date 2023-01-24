@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import React, {useState, useEffect} from 'react';
 
@@ -41,13 +40,13 @@ function App() {
   const [nextMsgId, setNextMsgId] = useState(0);
 
 
-  const login = (userObj) => {
+  const login = (userObj, firstTime) => {
     const {id, username, email} = userObj;
     setUser({loggedIn: true, id, username, email})
     // console.log(user);
     addMessages([
       {
-        text: `Welcome back, ${userObj.username}!`,
+        text: `Welcome${firstTime ? '' : ' back'}, ${userObj.username}!`,
         type: "success",
         cyclesLeft: 1
       }

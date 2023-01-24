@@ -22,7 +22,7 @@ function Signup() {
     if (password === confirmPassword) {
       xkcdAPI.signup(email, username, password)
       .then(userObj => {
-        login(userObj);
+        login(userObj, true);
       })
       .catch((errors) => {
         addMessages(errors.map(err => {

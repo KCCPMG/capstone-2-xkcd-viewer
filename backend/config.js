@@ -11,7 +11,7 @@ function getDatabaseUri() {
   if (process.env.NODE_ENV === "test"){
     return "xkcd_test"
   } else {
-    return "xkcd"
+    return process.env.DATABASE_URL || "xkcd";
   }
 }
 

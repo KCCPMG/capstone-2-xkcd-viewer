@@ -16,6 +16,10 @@
   width: fit-content;
 }
 
+.nav-button {
+  font-weight: bolder;
+}
+
 .upvoted {
   background-color: lightgreen;
 }

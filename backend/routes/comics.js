@@ -6,6 +6,17 @@ const Controls = require('../models/Controls');
 const router = new Router();;
 
 
+/** GET /
+ * TEST ROUTE ONLY
+ */
+router.get('/', async (req, res, next) => {
+  try {
+    res.json({message: "This should work regardless of database"});
+  } catch(e) {
+    return next(err);
+  }
+})
+
 /** GET comics/random
  * 
  * Finds a random comic and returns it. If there

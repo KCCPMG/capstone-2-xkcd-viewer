@@ -20,7 +20,7 @@ function Flash() {
   // console.log('messages - ', messages)
 
   useEffect(function() {
-    console.log(`useEffect Flash - ${location.pathname}`)
+    // console.log(`useEffect Flash - ${location.pathname}`)
     // let msgCopy = messages.filter(m => m.display);
     // msgCopy.forEach(msg => msg.display=false);
     // setMessages(msgCopy);

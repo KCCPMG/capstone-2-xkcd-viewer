@@ -27,7 +27,7 @@ function Popular() {
   return (
     <>
       {upvoted.map(fav => 
-        <Comic comicNum={fav} navControls={false} />
+        <Comic comicNum={fav} navControls={false} key={fav} />
       )}
     </>
   )

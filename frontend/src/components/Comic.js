@@ -1,29 +1,34 @@
 import React, {useState, useEffect, useContext} from 'react';
 import UserContext from '../helpers/UserContext';
 import FlashContext from '../helpers/FlashContext';
-import { useParams, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import xkcdAPI from '../helpers/api.js';
 import { Star, ArrowUpCircle } from 'react-bootstrap-icons';
+import { Tooltip } from 'react-tooltip';
 
 
-function NavButton({to, text}) {
+/** button wrapped in a link for nav controls under comic */
+function NavButton({to, text, id, toolText}) {
   return (
     // reloadDocument 
-    <Link to={to}>
-      <button className="btn btn-secondary m-1">
-        {text}
-      </button>
-    </Link>
+    <>
+      <Link to={to} id={id} data-tooltip-content={toolText} data-tooltip-place="bottom">
+        <button className="btn btn-secondary m-1 nav-button">
+          {text}
+        </button>
+      </Link>
+      <Tooltip anchorId={id} />
+    </>
   )
 }
 
-
+/** Upvote and favorite controls if logged in, display but disable if not */
 function ResponseControls(props) {
 
   const {user, comic, addUpvote, removeUpvote, addFavorite, removeFavorite} = props;
 
   return (
-    <div>
+    <>
       <div className="row justify-content-center response-control mt-1">
         <div className="col-1 mx-2">
           <div className="row justify-content-center">
@@ -52,11 +57,19 @@ function ResponseControls(props) {
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
 
+/** Main Comic component
+ * 
+ * Takes the props of a comicNum (int) or random (boolean) or
+ * current (boolean) to determine which API method should be
+ * called. That method is returned as getComicPromise, which
+ * is then called in the useEffect hook to load the comic data
+ * from the request to the server.
+ */
 function Comic({comicNum, navControls, random, current}) {
 
   const {user} = useContext(UserContext);
@@ -141,11 +154,6 @@ function Comic({comicNum, navControls, random, current}) {
   * comic given by its number
   */
   const getComicPromise = () => {
-
-    if (random) console.log("xkcdAPI.getRandomComic();");
-    else if (current) console.log("xkcdAPI.getLastComic();");
-    else console.log("xkcdAPI.getComic(comicNum);");
-
     if (random) return xkcdAPI.getRandomComic();
     else if (current) return xkcdAPI.getLastComic();
     else return xkcdAPI.getComic(comicNum);
@@ -154,7 +162,6 @@ function Comic({comicNum, navControls, random, current}) {
   const loadComic = () => {
     getComicPromise()
     .then((data) => {
-      // console.log(data);
       setComic(data);
     })
     .catch((errors) => {
@@ -197,25 +204,48 @@ function Comic({comicNum, navControls, random, current}) {
         <div className="btn-group">
           {comic.prev &&
             <>
-              <NavButton to="/comics/1" text="|<" />
-              <NavButton to={`/comics/${comic.prev}`} text="<" />
+              <NavButton
+                id="first-button" 
+                to="/comics/1" 
+                text="|<" 
+                toolText="Back to the beginning" 
+              />
+              <NavButton 
+                id="back-button"
+                to={`/comics/${comic.prev}`} 
+                text="<" 
+                toolText="Back"
+              />
             </>
           }
           {random
           ?
-            <Link>
-              <button className="btn btn-secondary m-1" onClick={loadComic}>
-                ?
-              </button>
-            </Link>
+            <>
+              <Link id="random-button" data-tooltip-content="Random" data-tooltip-place="bottom">
+                <button className="btn btn-secondary m-1 nav-button" onClick={loadComic}>
+                  ?
+                </button>
+              </Link>
+              <Tooltip anchorId="random-button" />
+            </>
           :
-            <NavButton to="/random" text="?" />
+            <NavButton id="random-button" to="/random" text="?" toolText="Random" />
           }
           
           {comic.subsequent &&
             <>
-              <NavButton to={`/comics/${comic.subsequent}`} text=">" />
-              <NavButton to="/current" text=">|" />
+              <NavButton 
+                to={`/comics/${comic.subsequent}`} 
+                text=">" 
+                id="forward-button"
+                toolText="Forward"
+              />
+              <NavButton 
+                to="/current" 
+                text=">|" 
+                id="current-button"
+                toolText="Forward to current"
+              />
             </>
           }
         </div>

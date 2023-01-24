@@ -1,7 +1,7 @@
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 
-const SERVER_URL = "http://localhost:5000";
+const SERVER_URL = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
 
 
 class xkcdAPI {
@@ -43,6 +43,13 @@ class xkcdAPI {
       return resp.data;
     } catch(err) {
       console.log(err);
+      console.log(err.response?.status === 401);
+      console.log(err.response?.status);
+      if (err.response?.status === 401) {
+        console.log(localStorage.getItem('token'));
+        localStorage.removeItem('token');
+        console.log(localStorage.getItem('token'));
+      }
       console.error("API Error", err.response);
       let message = err.response.data.error.message;
       // always throw error messages in an array

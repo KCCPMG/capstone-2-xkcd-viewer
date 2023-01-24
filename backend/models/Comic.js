@@ -18,8 +18,8 @@ const getComic = async (num) => {
         LAG(num) OVER (ORDER BY num ASC) AS prev, 
         LEAD(num) OVER (ORDER BY num ASC) as subsequent 
         FROM comics
-      ) AS chained_comic
-      WHERE num=$1`, [num]);
+        ) AS chained_comic
+        WHERE num=$1`, [num]);
     if (result.rows.length === 1) return result.rows[0];
     else throw new NotFoundError("Could not find this comic, please check your input");
 
