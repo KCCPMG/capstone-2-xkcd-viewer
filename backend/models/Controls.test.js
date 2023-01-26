@@ -1,6 +1,6 @@
 const db = require("../db.js");
 const { signup } = require("./User");
-const { getComicDetails } = require("./Controls");
+const { getComicDetails, getFirstComicDetails, getLastComicDetails, getRandomComicDetails } = require("./Controls");
 const { addUpvote, removeUpvote } = require('./Upvote');
 const { addFavorite, removeFavorite } = require('./Favorite');
 process.env.NODE_ENV = "test";
@@ -120,4 +120,45 @@ describe("Testing getComicDetails", function() {
     await removeFavorite(testUser.id, 2000);
   })
 
+})
+
+
+describe("getFirstComicDetails", function() {
+  
+  test("getFirstComicDetails returns first comic", async function() {
+    const comic = await getFirstComicDetails();
+    expect(comic.num).toBe(1);
+    expect(comic.prev).toBe(null);
+    expect(comic.subsequent).toBe(2);
+  })
+})
+
+
+describe("getLastComicDetails", function() {
+
+  test("getLastComicDetails returns last comic", async function() {
+    const comic = await getLastComicDetails();
+    expect(comic.num).toBe(2707);
+    expect(comic.prev).toBe(2706);
+    expect(comic.subsequent).toBe(null);
+  })
+})
+
+
+describe("getRandomComicDetails", function() {
+  
+  test("getRandomComicDetails returns random comic", async function(){
+    const comic = await getRandomComicDetails();
+    expect(comic).toHaveProperty('month');
+    expect(comic).toHaveProperty('num');
+    expect(comic).toHaveProperty('link');
+    expect(comic).toHaveProperty('year');
+    expect(comic).toHaveProperty('news');
+    expect(comic).toHaveProperty('safe_title');
+    expect(comic).toHaveProperty('transcript');
+    expect(comic).toHaveProperty('alt');
+    expect(comic).toHaveProperty('img');
+    expect(comic).toHaveProperty('title');
+    expect(comic).toHaveProperty('day');
+  })
 })

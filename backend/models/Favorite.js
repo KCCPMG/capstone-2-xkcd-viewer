@@ -69,7 +69,7 @@ const removeFavorite = async (userId, comicNum) => {
 /** Given a userId, returns all comicIds favorited by the user
  * If no user, throws an UnauthorizedError
  */
-getFavoritesByUser = async (userId) => {
+const getFavoritesByUser = async (userId) => {
   try {
     if (!userId) throw new UnauthorizedError();
     const favoritesQuery = await db.query(`SELECT comic_num FROM favorites WHERE user_id=$1`, [userId]);
@@ -89,7 +89,7 @@ getFavoritesByUser = async (userId) => {
  * a boolean as to whether or not that user has 
  * upvoted the comic
  */
-getFavoritesByComic = async (comicNum, userId) => {
+const getFavoritesByComic = async (comicNum, userId) => {
   try {
     const favoriteQuery = await db.query(`SELECT * FROM favorites WHERE comic_num=$1`, [comicNum]);
 

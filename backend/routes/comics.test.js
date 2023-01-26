@@ -32,6 +32,116 @@ afterAll(async () => {
   await db.end();
 })
 
+describe("GET /comics/random", function () {
+
+  test("successfully gets a random comic", async () => {
+    const resp = await request(app)
+      .get('/comics/random');
+
+    expect(resp.body).toHaveProperty('month');
+    expect(resp.body).toHaveProperty('num');
+    expect(resp.body).toHaveProperty('link');
+    expect(resp.body).toHaveProperty('year');
+    expect(resp.body).toHaveProperty('news');
+    expect(resp.body).toHaveProperty('safe_title');
+    expect(resp.body).toHaveProperty('transcript');
+    expect(resp.body).toHaveProperty('alt');
+    expect(resp.body).toHaveProperty('img');
+    expect(resp.body).toHaveProperty('title');
+    expect(resp.body).toHaveProperty('day');
+    expect(resp.body).toHaveProperty('prev');
+    expect(resp.body).toHaveProperty('subsequent');
+  })
+
+})
+
+
+describe("GET /comics/current", function () {
+
+  test("successfully gets the current/latest comic", async () => {
+    const highestQuery = await db.query(`SELECT COUNT(*) FROM comics`)
+    const highest = +(highestQuery.rows[0].count) + 1;
+
+    const resp = await request(app)
+      .get('/comics/current');
+  
+    expect(resp.body).toHaveProperty('month');
+    expect(resp.body.num).toBe(highest);
+    expect(resp.body).toHaveProperty('link');
+    expect(resp.body).toHaveProperty('year');
+    expect(resp.body).toHaveProperty('news');
+    expect(resp.body).toHaveProperty('safe_title');
+    expect(resp.body).toHaveProperty('transcript');
+    expect(resp.body).toHaveProperty('alt');
+    expect(resp.body).toHaveProperty('img');
+    expect(resp.body).toHaveProperty('title');
+    expect(resp.body).toHaveProperty('day');
+    expect(resp.body).toHaveProperty('prev');
+    expect(resp.body).toHaveProperty('subsequent', null);
+  })
+
+})
+
+
+describe("GET /comics/favorites", function () {
+
+  beforeAll(async () => {
+    await db.query(`DELETE FROM users CASCADE WHERE username=$1`, ['fakeuserfavorites']);
+  })
+
+  test("return 401 error when not logged in", async () => {
+    const resp = await request(app)
+      .get('/comics/favorites');
+
+    expect(resp.status).toBe(401);
+    expect(resp.body.error.message).toBe("Invalid credentials, please try again")
+  })
+
+  test("get an array of comic numbers when logged in", async () => {
+
+    const fakeUser = await User.signup({
+      username: "fakeuserfavorites", 
+      email: "fuf@test.com",
+      password: "password" 
+    });
+
+    await Promise.all([
+      Favorite.addFavorite(fakeUser.id, 1000),
+      Favorite.addFavorite(fakeUser.id, 1500),
+      Favorite.addFavorite(fakeUser.id, 5),
+      Favorite.addFavorite(fakeUser.id, 500),
+    ]);
+    
+    const token = jwt.sign({email: fakeUser.email, username: fakeUser.username, id: fakeUser.id}, SECRET_KEY);
+
+    const resp = await request(app)
+      .get('/comics/favorites')
+      .set('token', token);
+
+    expect(resp.body).toBeInstanceOf(Array);
+    expect(resp.body.length).toBe(4);
+    expect(resp.body).toContain(1000);
+    expect(resp.body).toContain(1500);
+    expect(resp.body).toContain(5);
+    expect(resp.body).toContain(500);
+  })
+
+})
+
+
+describe("GET /comics/popular", function () {
+
+  test("successfully get list of popular comics", async () => {
+    const resp = await request(app)
+      .get('/comics/popular')
+
+    expect(resp.body).toBeInstanceOf(Array);
+    expect(resp.body.every(c => c%1==0));
+  })
+
+})
+
+
 describe("GET /comics/:num", function() {
 
   test("successfully retrieves a comic (no user)", async () => {
@@ -122,13 +232,13 @@ describe("POST /comics/upvote/:num", function () {
     expect(resp.body.error.message).toBe("Cannot add upvote as requested, upvote already exists")
   });
 
-  test("throws a NotFoundError with bad user_id", async () => {
+  test("throws an UnauthorizedError with bad user_id", async () => {
     const badToken = jwt.sign('baduser', SECRET_KEY);
     const resp = await request(app)
       .post("/comics/upvote/2000")
       .set('token', badToken)
-    expect(resp.statusCode).toBe(404)
-    expect(resp.body.error.message).toBe("Cannot add upvote as requested, user not found")
+    expect(resp.statusCode).toBe(401);
+    expect(resp.body.error.message).toBe("Invalid credentials, please try again")
   });
 
   test("throws a NotFoundError with bad comic", async () => {
@@ -173,13 +283,13 @@ describe("POST /comics/favorite/:num", function () {
     expect(resp.body.error.message).toBe("Cannot favorite as requested, comic already favorited")
   });
 
-  test("throws a NotFoundError with bad user_id", async () => {
+  test("throws an UnauthorizedError with bad user_id", async () => {
     const badToken = jwt.sign('baduser', SECRET_KEY);
     const resp = await request(app)
       .post("/comics/favorite/2000")
       .set('token', badToken)
-    expect(resp.statusCode).toBe(404)
-    expect(resp.body.error.message).toBe("Cannot favorite as requested, user not found")
+    expect(resp.statusCode).toBe(401)
+    expect(resp.body.error.message).toBe("Invalid credentials, please try again")
   });
 
   test("throws a NotFoundError with bad comic", async () => {

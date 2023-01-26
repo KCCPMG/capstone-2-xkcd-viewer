@@ -96,3 +96,42 @@ describe("first, last, random comics", function() {
     expect(comic.subsequent).toBe(comic.num+1);
   })
 })
+
+
+describe("addComic", function() {
+
+  const newComic = {
+    "month": "12", 
+    "num": 10000, 
+    "link": "", 
+    "year": "2022", 
+    "news": "", 
+    "safe_title": "Mystery Asterisk Destination", 
+    "transcript": "", 
+    "alt": "If you ever see the \u2020 dagger symbol with no unmatched footnote, it means the writer is saying the phrase while threatening you with a dagger.", 
+    "img": "https://imgs.xkcd.com/comics/mystery_asterisk_destination.png", 
+    "title": "Mystery Asterisk Destination", 
+    "day": "7"
+  }
+
+  afterAll(async () => {
+    await db.query(`DELETE FROM comics WHERE num=10000`);
+  })
+
+  test("addComic successfully adds comic", async function() {
+    await addComic(newComic);
+    const comic = await getLastComic();
+    expect(comic.num).toBe(10000);
+    expect(comic.prev).toBe(2707);
+    expect(comic.subsequent).toBe(null);
+    for (let [key, val] of Object.entries(newComic)) {
+      expect(val).toBe(comic[key])
+    }
+  })
+
+  test("addComic throws error for bad comic", async function() {
+    const badComic = Object.assign({}, newComic);
+    delete badComic.num;
+    await expect(addComic(badComic)).rejects.toThrow("Bad Request: Could not create comic, please check your input")
+  })
+})

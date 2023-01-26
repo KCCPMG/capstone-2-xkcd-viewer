@@ -1,6 +1,6 @@
 const db = require("../db.js");
-const { signup, getUser} = require("./User.js");
-const { addUpvote, removeUpvote, getUpvotesByComic, getUpvotesByUser } = require("./Upvote.js");
+const { signup } = require("./User.js");
+const { addUpvote, removeUpvote, getUpvotesByComic, getUpvotesByUser, getMostUpvoted } = require("./Upvote.js");
 process.env.NODE_ENV = "test";
 
 
@@ -179,3 +179,83 @@ describe("retrieves upvotes by user", function() {
   })
 
 })
+
+
+describe("getMostUpvoted", function() {
+
+  // need to create fake upvotes
+  // 3 for 20, 1 for 1, 4 for 200, 2 for 45
+  beforeAll( async function() {
+    await db.query(`DELETE FROM users CASCADE WHERE username LIKE 'fakeuser%'`);
+    await db.query(`DELETE FROM upvotes`);
+    let fakeuserone, fakeusertwo, fakeuserthree, fakeuserfour, fakeuserfive, fakeusersix;
+    await Promise.all([
+      signup({
+        username: 'fakeuserone',
+        email: 'fakeuserone@aol.com',
+        password: 'password'
+      }),
+      signup({
+        username: 'fakeusertwo',
+        email: 'fakeusertwo@aol.com',
+        password: 'password'
+      }),
+      signup({
+        username: 'fakeuserthree',
+        email: 'fakeuserthree@aol.com',
+        password: 'password'
+      }),
+      signup({
+        username: 'fakeuserfour',
+        email: 'fakeuserfour@aol.com',
+        password: 'password'
+      }),
+      signup({
+        username: 'fakeuserfive',
+        email: 'fakeuserfive@aol.com',
+        password: 'password'
+      }),
+      signup({
+        username: 'fakeusersix',
+        email: 'fakeusersix@aol.com',
+        password: 'password'
+      })
+    ]).then( (arr) => {
+      fakeuserone = arr[0]
+      fakeusertwo = arr[1]
+      fakeuserthree = arr[2]
+      fakeuserfour = arr[3]
+      fakeuserfive = arr[4]
+      fakeusersix = arr[5]
+    })
+
+    await Promise.all([
+      db.query(`INSERT INTO UPVOTES (user_id, comic_num) 
+      VALUES ($1, $2)`, [fakeuserone.id, 20]),
+      db.query(`INSERT INTO UPVOTES (user_id, comic_num) 
+      VALUES ($1, $2)`, [fakeusertwo.id, 20]),
+      db.query(`INSERT INTO UPVOTES (user_id, comic_num) 
+      VALUES ($1, $2)`, [fakeuserthree.id, 20]),
+      db.query(`INSERT INTO UPVOTES (user_id, comic_num) 
+      VALUES ($1, $2)`, [fakeuserthree.id, 1]),
+      db.query(`INSERT INTO UPVOTES (user_id, comic_num) 
+      VALUES ($1, $2)`, [fakeuserfour.id, 200]),
+      db.query(`INSERT INTO UPVOTES (user_id, comic_num) 
+      VALUES ($1, $2)`, [fakeuserthree.id, 200]),
+      db.query(`INSERT INTO UPVOTES (user_id, comic_num) 
+      VALUES ($1, $2)`, [fakeusertwo.id, 200]),
+      db.query(`INSERT INTO UPVOTES (user_id, comic_num) 
+      VALUES ($1, $2)`, [fakeuserone.id, 200]),
+      db.query(`INSERT INTO UPVOTES (user_id, comic_num) 
+      VALUES ($1, $2)`, [fakeuserfive.id, 45]),
+      db.query(`INSERT INTO UPVOTES (user_id, comic_num) 
+      VALUES ($1, $2)`, [fakeusersix.id, 45])
+    ])
+  })
+
+  test("gets comic numbers in descending order of upvotes", async function(){
+    const upvotes = await getMostUpvoted();
+    expect(upvotes).toStrictEqual([200, 20, 45, 1]);
+  })
+
+});

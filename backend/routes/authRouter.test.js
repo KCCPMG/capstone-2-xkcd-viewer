@@ -54,11 +54,11 @@ describe("POST /auth/signup", function() {
         password: "secondtestpassword"
       })
     expect(resp.statusCode).toBe(400);
-    expect(resp.body.error.message).toBe("Bad Request, please check input, make sure to avoid duplication");
+    expect(resp.body.error.message).toBe("Could not register user, an account already exists with this email address");
   })
 
 
-  test("throws bad request error with invalid credentials", async () => {
+  test("throws bad request error with invalid email address", async () => {
     const resp = await request(app)
       .post('/auth/signup')
       .send({
@@ -67,10 +67,10 @@ describe("POST /auth/signup", function() {
         password: "baduserpassword"
       })
     expect(resp.statusCode).toBe(400);
-    expect(resp.body.error.message).toBe("Bad Request, please check input, make sure to avoid duplication");
+    expect(resp.body.error.message).toBe("Could not register user, invalid email address");
   })
 
-  test("throws bad request error with missing credentials", async () => {
+  test("throws bad request error with missing email", async () => {
     const resp = await request(app)
       .post('/auth/signup')
       .send({
@@ -79,7 +79,7 @@ describe("POST /auth/signup", function() {
         password: "baduserpassword"
       })
     expect(resp.statusCode).toBe(400);
-    expect(resp.body.error.message).toBe("Bad Request, please check input, make sure to avoid duplication");
+    expect(resp.body.error.message).toBe("Could not register user, invalid email address");
   })
 
 
@@ -111,6 +111,6 @@ describe("POST /auth/login", function() {
         "password": "wrong-password"
       })
     expect(resp.statusCode).toBe(401);
-    expect(resp.body.error.message).toBe("Bad Login");
+    expect(resp.body.error.message).toBe("Invalid credentials, please try again");
   })
 })

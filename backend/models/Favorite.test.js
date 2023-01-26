@@ -1,5 +1,5 @@
 const db = require("../db.js");
-const { signup, getUser} = require("./User.js");
+const { signup } = require("./User.js");
 const { addFavorite, removeFavorite, getFavoritesByComic, getFavoritesByUser } = require("./Favorite.js");
 process.env.NODE_ENV = "test";
 
