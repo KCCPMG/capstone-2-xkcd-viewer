@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import xkcdAPI from '../helpers/api.js';
 import { Star, ArrowUpCircle } from 'react-bootstrap-icons';
 import { Tooltip } from 'react-tooltip';
+import {Col, Button, Row, Image} from 'react-bootstrap';
+
 
 
 /** button wrapped in a link for nav controls under comic */
@@ -29,34 +31,40 @@ function ResponseControls(props) {
 
   return (
     <>
-      <div className="row justify-content-center response-control mt-1">
-        <div className="col-1 mx-2">
-          <div className="row justify-content-center">
-            <button 
-              className={`response-control-button btn btn-outline-dark ${user.username ? "" : "disabled"} ${comic.upvoted ? "upvoted" : ""}`}
-              onClick={comic.upvoted ? removeUpvote : addUpvote}
-            >
-              <ArrowUpCircle className="response-control-icon" />
-            </button>
-          </div>
-          <div className="row">
-            <span className="response-count">{comic.upvoteCount}</span>
-          </div>
-        </div>
-        <div className="col-1 mx-2">
-          <div className="row justify-content-center">
-            <button 
-              className={`response-control-button btn btn-outline-dark ${user.username ? "" : "disabled"} ${comic.favorited ? "favorited" : ""}`}
-              onClick={comic.favorited ? removeFavorite : addFavorite}
-            >
-              <Star className="response-control-icon" />
-            </button>
-          </div>
-          <div className="row">
-            <span className="response-count">{comic.favoriteCount}</span>
-          </div>
-        </div>
-      </div>
+      <Row className="justify-content-center response-control mt-1">
+        <Col xs={6} sm={4} md={2} lg={2} xl={2} xxl={1}>
+          <Row className="justify-content-center">
+            <Col>
+              <Row className="justify-content-center">
+                <Button 
+                  variant="light"
+                  className={`response-control-button btn-outline-dark ${user.username ? "" : "disabled"} ${comic.upvoted ? "upvoted" : ""}`}
+                  onClick={comic.upvoted ? removeUpvote : addUpvote}
+                >
+                  <ArrowUpCircle className="response-control-icon" />
+                </Button>
+              </Row>
+              <Row>
+                <span className="response-count">{comic.upvoteCount}</span>
+              </Row>
+            </Col>
+            <Col>  
+              <Row className="justify-content-center">
+                <Button 
+                  variant="light"
+                  className={`response-control-button btn-outline-dark ${user.username ? "" : "disabled"} ${comic.favorited ? "favorited" : ""}`}
+                  onClick={comic.favorited ? removeFavorite : addFavorite}
+                >
+                  <Star className="response-control-icon" />
+                </Button>
+              </Row>
+              <Row>
+                <span className="response-count">{comic.favoriteCount}</span>
+              </Row>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
     </>
   )
 }
@@ -188,7 +196,7 @@ function Comic({comicNum, navControls, random, current}) {
     <div className="comic mt-5">
       <h3 style={{fontWeight: 700}}>#{comic.num}: {comic.title}</h3>
       <div className="image-container">
-        <img src={comic.img} />
+        <Image fluid src={comic.img} />
       </div>
       {(comic.img) &&
         <ResponseControls 

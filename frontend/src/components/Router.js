@@ -1,7 +1,7 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 
 import Home from './Home';
-import Navbar from './Navbar';
+import AppNavbar from './AppNavbar';
 import Comic from './Comic';
 import ComicView from './ComicView';
 import Login from './Login';
@@ -16,7 +16,7 @@ import NotFound from './NotFound';
 function Router() {
   return (
     <BrowserRouter>
-      <Navbar />
+      <AppNavbar />
       <Flash />
       <Routes >
         <Route path="/" element={<Home />}/>

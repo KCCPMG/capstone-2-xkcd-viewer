@@ -8,7 +8,7 @@ function Home() {
 
   return(
     <>
-      <Comic comicNum={1} navControls={true} />
+      <Comic navControls={true} current={true} />
     </>
   )
 }

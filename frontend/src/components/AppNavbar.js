@@ -1,18 +1,20 @@
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import UserContext from "../helpers/UserContext";
+import {Navbar} from 'react-bootstrap';
 
-function Navbar() {
+function AppNavbar() {
 
   const {user} = useContext(UserContext);
   // console.log(user);
 
   return (
-    <nav className="navbar navbar-expand-md navbar-dark bg-dark justify-content-between px-2">
+    <Navbar bg="dark" variant="dark" sticky="top" expand="md" className="justify-content-between px-2">
       <Link className="navbar-brand mx-3" to="/">
         <h3>xkcd View</h3>
       </Link>
-      <button 
+      <Navbar.Toggle />
+      {/* <button 
         className="navbar-toggler" 
         type="button" 
         data-bs-toggle="collapse" 
@@ -22,8 +24,8 @@ function Navbar() {
         aria-label="Toggle navigation"
       >
         <span className="navbar-toggler-icon"></span>
-      </button>
-      <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
+      </button> */}
+      <Navbar.Collapse className="justify-content-end" id="navbarNav">
         <ul className="navbar-nav">
           <li className="nav-item">
             <Link className="nav-link" to="/">Home</Link>
@@ -57,9 +59,9 @@ function Navbar() {
             </>
           }
         </ul>
-      </div>
-    </nav>
+      </Navbar.Collapse>
+    </Navbar>
   )
 }
 
-export default Navbar;
+export default AppNavbar;
