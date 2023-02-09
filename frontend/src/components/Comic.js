@@ -196,7 +196,7 @@ function Comic({comicNum, navControls, random, current}) {
     <div className="comic mt-5">
       <h3 style={{fontWeight: 700}}>#{comic.num}: {comic.title}</h3>
       <div className="image-container">
-        <Image fluid src={comic.img} />
+        <Image fluid src={comic.img} title={comic.alt} />
       </div>
       {(comic.img) &&
         <ResponseControls 

@@ -1,0 +1,7 @@
+-Better comments/documentation esp. on frontend
+-Add editUser ability end-to-end
+-Add search ability on frontend
+-Add special case rendering
+-Reorganize backend file structure to put Controls.js into new "aggregate" folder
+-Add special case rendering
+-Check over frontend code to transition as much as possible to ReactBootstrap elements 

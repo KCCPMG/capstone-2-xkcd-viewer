@@ -9,6 +9,7 @@
 
 const axios = require('axios');
 const fs = require('fs');
+const db = require('../db');
 
 /** Simple function for getting a comic and logging the json data */
 function logComic(comicId) {
@@ -72,4 +73,49 @@ function getAllComicsSync(assignmentArr) {
 }
 
 
-module.exports = {logComic, getComic, getComicSync, getAllComics, getAllComicsSync}
+async function updateDatabase() {
+  // get number of latest comic in database
+  const latestQuery = await db.query(`SELECT num FROM (
+      SELECT *, 
+      LAG(num) OVER (ORDER BY num ASC) AS prev, 
+      LEAD(num) OVER (ORDER BY num ASC) as subsequent 
+      FROM comics
+    ) AS chained_comic
+    ORDER BY num DESC LIMIT 1`);
+  const latestInDatabase = latestQuery.rows[0].num;
+
+  // set cursor to latest comic number + 1
+  let cursor = latestInDatabase + 1;
+
+  // keep going until error on request
+  let cont = true;
+  while (cont === true) {
+
+    try {
+      // try to get comic at cursor
+      let comicReq = await axios.get(`https://xkcd.com/${cursor}/info.0.json`);
+      let comic = comicReq.data;
+      let {num, month, link, year, news, safe_title, transcript, alt, img, title, day} = comic;
+      // if successful, write comic to database
+      await db.query(`INSERT INTO comics
+        (num, month, link, year, news, safe_title, transcript, alt, img, title, day)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);
+      `, [num, month, link, year, news, safe_title, transcript, alt, img, title, day])
+
+      // increment cursor
+      cursor++;
+      
+    } catch(err) {
+      // if unsuccessful, return
+      console.log(err);
+      cont = false;
+      break;
+    }
+  }
+
+  return cursor-1;
+}
+
+
+
+module.exports = {logComic, getComic, getComicSync, getAllComics, getAllComicsSync, updateDatabase}
